@@ -108,7 +108,8 @@
   }
   
   .translation-text {
-    @apply text-foreground text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed;
+    @apply text-foreground leading-relaxed;
+    font-size: clamp(0.875rem, 2.5vw, 3rem);
     word-wrap: break-word;
     hyphens: auto;
   }

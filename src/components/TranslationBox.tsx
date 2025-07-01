@@ -252,7 +252,7 @@ const KhutbahDisplay = () => {
                       ease: "easeOut",
                       delay: 0.05 * index
                     }}
-                    className="translation-text text-left"
+                    className="translation-text text-center"
                     style={{
                       opacity: Math.max(0.05, 1 - (index * 0.2))
                     }}
