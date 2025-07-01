@@ -291,15 +291,18 @@ const KhutbahDisplay = () => {
                 {lines.map((line, index) => (
                   <motion.div
                     key={line.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: Math.max(0.1, 1 - (index * 0.09)), y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ 
                       duration: 0.5, 
                       ease: "easeOut",
-                      delay: 0.1 * (index % 3)
+                      delay: 0.05 * index
                     }}
                     className="translation-text text-left"
+                    style={{
+                      opacity: Math.max(0.1, 1 - (index * 0.09))
+                    }}
                   >
                     {line.text}
                   </motion.div>
