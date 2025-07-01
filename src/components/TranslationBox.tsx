@@ -14,7 +14,7 @@ interface TranslationLine {
   timestamp: number;
 }
 
-const KhutbahDisplay = () => {
+const TranslationBox = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [lines, setLines] = useState<TranslationLine[]>([]);
   const [showTranscription, setShowTranscription] = useState(true);
@@ -327,4 +327,4 @@ const KhutbahDisplay = () => {
   );
 };
 
-export default KhutbahDisplay;
+export default TranslationBox;
