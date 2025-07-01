@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun, Eye, EyeClosed } from 'lucide-react';
+import { Moon, Sun, Eye, EyeClosed, ListCollapse } from 'lucide-react';
 
 interface Word {
   id: string;
@@ -21,6 +21,7 @@ const KhutbahDisplay = () => {
   const [isDark, setIsDark] = useState(() => 
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
+  const [isDevMode, setIsDevMode] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   // Demo Arabic words for simulation
@@ -107,6 +108,70 @@ const KhutbahDisplay = () => {
     };
   }, []);
 
+  // Dev mode simulation
+  useEffect(() => {
+    if (!isDevMode) return;
+
+    let wordIndex = 0;
+    let lineIndex = 0;
+
+    // Simulate Arabic words
+    const addWord = () => {
+      if (wordIndex < demoWords.length) {
+        const newWord: Word = {
+          id: `dev-word-${Date.now()}-${wordIndex}`,
+          text: demoWords[wordIndex],
+          timestamp: Date.now(),
+        };
+        
+        setWords(prev => {
+          const updated = [...prev, newWord];
+          return updated.slice(-30);
+        });
+        
+        wordIndex++;
+      } else {
+        wordIndex = 0;
+        setWords([]);
+      }
+    };
+
+    // Simulate translation lines
+    const addLine = () => {
+      if (lineIndex < demoLines.length) {
+        const newLine: TranslationLine = {
+          id: `dev-line-${Date.now()}-${lineIndex}`,
+          text: demoLines[lineIndex],
+          timestamp: Date.now(),
+        };
+        
+        setLines(prev => {
+          const updated = [...prev, newLine];
+          return updated.slice(-10);
+        });
+        
+        lineIndex++;
+      } else {
+        lineIndex = 0;
+        setLines([]);
+      }
+    };
+
+    // Start with first word and line
+    addWord();
+    const lineTimeout = setTimeout(addLine, 1000);
+    
+    // Continue adding words every 800ms and lines every 4s
+    const wordInterval = setInterval(addWord, 800);
+    const lineInterval = setInterval(addLine, 4000);
+    
+    return () => {
+      clearTimeout(lineTimeout);
+      clearInterval(wordInterval);
+      clearInterval(lineInterval);
+    };
+  }, [isDevMode]);
+
   // Auto-scroll translation box to bottom when new lines are added
   useEffect(() => {
     if (scrollRef.current) {
@@ -149,6 +214,17 @@ const KhutbahDisplay = () => {
         ) : (
           <EyeClosed className="w-5 h-5 text-foreground" />
         )}
+      </button>
+
+      {/* Dev mode toggle */}
+      <button
+        onClick={() => setIsDevMode(!isDevMode)}
+        className={`fixed top-6 right-36 p-3 rounded-full border border-border/30 hover:bg-card/30 transition-colors z-10 ${
+          isDevMode ? 'bg-primary/20 text-primary' : 'bg-card/20 text-foreground'
+        }`}
+        aria-label="Toggle dev mode"
+      >
+        <ListCollapse className="w-5 h-5" />
       </button>
 
       {/* Container for both boxes with consistent spacing */}
