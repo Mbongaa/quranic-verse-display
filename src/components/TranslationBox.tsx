@@ -84,9 +84,9 @@ const KhutbahDisplay = () => {
           };
           
           setLines(prev => {
-            const updated = [...prev, newLine];
-            // Keep only the last 10 lines for display
-            return updated.slice(-10);
+            const updated = [newLine, ...prev];
+            // Keep only the first 10 lines for display (newest at top)
+            return updated.slice(0, 10);
           });
         }
       } catch (error) {
@@ -146,8 +146,8 @@ const KhutbahDisplay = () => {
         };
         
         setLines(prev => {
-          const updated = [...prev, newLine];
-          return updated.slice(-10);
+          const updated = [newLine, ...prev];
+          return updated.slice(0, 10);
         });
         
         lineIndex++;
@@ -172,10 +172,10 @@ const KhutbahDisplay = () => {
     };
   }, [isDevMode]);
 
-  // Auto-scroll translation box to bottom when new lines are added
+  // Keep scroll at top since newest translations appear at top
   useEffect(() => {
     if (scrollRef.current) {
-      scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
+      scrollRef.current.scrollTop = 0;
     }
   }, [lines]);
 
