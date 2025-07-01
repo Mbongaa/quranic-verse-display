@@ -229,55 +229,8 @@ const KhutbahDisplay = () => {
 
       {/* Container for both boxes with consistent spacing */}
       <div className="mt-16 flex-1 mb-6 flex flex-col">
-        {/* Arabic Transcription Box */}
-        <AnimatePresence>
-          {showTranscription && (
-            <motion.div 
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.3, ease: "easeOut" }}
-              className="mb-8"
-            >
-              <div className="translation-box w-full max-w-4xl mx-auto h-24 p-6">
-                <div className="h-full overflow-hidden">
-                  <div className="text-right dir-rtl space-x-reverse space-x-2 flex flex-wrap-reverse justify-end content-end">
-                    <AnimatePresence>
-                      {words.map((word, index) => (
-                        <motion.span
-                          key={word.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ 
-                            duration: 0.3, 
-                            ease: "easeOut"
-                          }}
-                          className="translation-text inline-block ml-2"
-                        >
-                          {word.text}
-                        </motion.span>
-                      ))}
-                    </AnimatePresence>
-                    
-                    {words.length === 0 && (
-                      <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        className="translation-text text-muted-foreground text-center w-full"
-                      >
-                        انتظار النص العربي...
-                      </motion.div>
-                    )}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-
         {/* Translation Box - fills remaining space */}
-        <div className="flex-1 flex flex-col">
+        <div className="flex-1 flex flex-col mb-8">
           <div className="translation-box w-full max-w-4xl mx-auto flex-1 p-6">
             <div 
               ref={scrollRef}
@@ -321,6 +274,52 @@ const KhutbahDisplay = () => {
             </div>
           </div>
         </div>
+
+        {/* Arabic Transcription Box */}
+        <AnimatePresence>
+          {showTranscription && (
+            <motion.div 
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: 'auto' }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.3, ease: "easeOut" }}
+            >
+              <div className="translation-box w-full max-w-4xl mx-auto h-24 p-6">
+                <div className="h-full overflow-hidden">
+                  <div className="text-right dir-rtl space-x-reverse space-x-2 flex flex-wrap-reverse justify-end content-end">
+                    <AnimatePresence>
+                      {words.map((word, index) => (
+                        <motion.span
+                          key={word.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -10 }}
+                          transition={{ 
+                            duration: 0.3, 
+                            ease: "easeOut"
+                          }}
+                          className="translation-text inline-block ml-2"
+                        >
+                          {word.text}
+                        </motion.span>
+                      ))}
+                    </AnimatePresence>
+                    
+                    {words.length === 0 && (
+                      <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        className="translation-text text-muted-foreground text-center w-full"
+                      >
+                        انتظار النص العربي...
+                      </motion.div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
