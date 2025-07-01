@@ -48,76 +48,62 @@ const KhutbahDisplay = () => {
     document.documentElement.classList.toggle('dark');
   };
 
-  // Simulate Arabic words being added
+  // WebSocket connection for real-time transcription and translation
   useEffect(() => {
-    let currentWordIndex = 0;
+    // Create WebSocket connection to the backend
+    const ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`);
     
-    const addWord = () => {
-      if (currentWordIndex < demoWords.length) {
-        const newWord: Word = {
-          id: `word-${Date.now()}-${currentWordIndex}`,
-          text: demoWords[currentWordIndex],
-          timestamp: Date.now(),
-        };
+    ws.onopen = () => {
+      console.log('Connected to WebSocket server');
+    };
+    
+    ws.onmessage = (event) => {
+      try {
+        const data = JSON.parse(event.data);
         
-        setWords(prev => {
-          const updated = [...prev, newWord];
-          // Keep only the last 20 words for demo
-          return updated.slice(-20);
-        });
-        
-        currentWordIndex++;
-      } else {
-        // Reset and start over
-        currentWordIndex = 0;
-        setWords([]);
+        if (data.type === 'transcription') {
+          // Handle incoming transcription words
+          const newWord: Word = {
+            id: `word-${Date.now()}-${Math.random()}`,
+            text: data.text,
+            timestamp: Date.now(),
+          };
+          
+          setWords(prev => {
+            const updated = [...prev, newWord];
+            // Keep only the last 30 words for display
+            return updated.slice(-30);
+          });
+        } else if (data.type === 'translation') {
+          // Handle incoming translation lines
+          const newLine: TranslationLine = {
+            id: `line-${Date.now()}-${Math.random()}`,
+            text: data.text,
+            timestamp: Date.now(),
+          };
+          
+          setLines(prev => {
+            const updated = [...prev, newLine];
+            // Keep only the last 10 lines for display
+            return updated.slice(-10);
+          });
+        }
+      } catch (error) {
+        console.error('Error parsing WebSocket message:', error);
       }
     };
-
-    // Add first word immediately
-    addWord();
     
-    // Then add a new word every 0.5 seconds
-    const interval = setInterval(addWord, 500);
-    
-    return () => clearInterval(interval);
-  }, []);
-
-  // Simulate translation lines being added
-  useEffect(() => {
-    let currentLineIndex = 0;
-    
-    const addLine = () => {
-      if (currentLineIndex < demoLines.length) {
-        const newLine: TranslationLine = {
-          id: `line-${Date.now()}-${currentLineIndex}`,
-          text: demoLines[currentLineIndex],
-          timestamp: Date.now(),
-        };
-        
-        setLines(prev => {
-          const updated = [...prev, newLine];
-          // Keep only the last 8 lines for demo
-          return updated.slice(-8);
-        });
-        
-        currentLineIndex++;
-      } else {
-        // Reset and start over
-        currentLineIndex = 0;
-        setLines([]);
-      }
+    ws.onclose = () => {
+      console.log('WebSocket connection closed');
     };
-
-    // Add first line after 1 second
-    const timeout = setTimeout(addLine, 1000);
     
-    // Then add a new line every 3 seconds
-    const interval = setInterval(addLine, 3000);
+    ws.onerror = (error) => {
+      console.error('WebSocket error:', error);
+    };
     
+    // Cleanup on component unmount
     return () => {
-      clearTimeout(timeout);
-      clearInterval(interval);
+      ws.close();
     };
   }, []);
 
