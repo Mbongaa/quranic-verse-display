@@ -292,7 +292,7 @@ const KhutbahDisplay = () => {
                   <motion.div
                     key={line.id}
                     initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: Math.max(0.05, 1 - Math.pow(index * 0.15, 1.1)), y: 0 }}
+                    animate={{ opacity: Math.max(0.05, 1 - (index * 0.2)), y: 0 }}
                     exit={{ opacity: 0, y: -10 }}
                     transition={{ 
                       duration: 0.5, 
@@ -301,7 +301,7 @@ const KhutbahDisplay = () => {
                     }}
                     className="translation-text text-left"
                     style={{
-                      opacity: Math.max(0.05, 1 - Math.pow(index * 0.15, 1.1))
+                      opacity: Math.max(0.05, 1 - (index * 0.2))
                     }}
                   >
                     {line.text}
