@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun } from 'lucide-react';
+import { Moon, Sun, Eye, EyeClosed } from 'lucide-react';
 
 interface Word {
   id: string;
@@ -17,6 +17,7 @@ interface TranslationLine {
 const KhutbahDisplay = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [lines, setLines] = useState<TranslationLine[]>([]);
+  const [showTranscription, setShowTranscription] = useState(true);
   const [isDark, setIsDark] = useState(() => 
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
@@ -137,11 +138,11 @@ const KhutbahDisplay = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-card p-6">
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-card p-6 flex flex-col">
       {/* Dark mode toggle */}
       <button
         onClick={toggleDarkMode}
-        className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors"
+        className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
         aria-label="Toggle dark mode"
       >
         {isDark ? (
@@ -151,46 +152,74 @@ const KhutbahDisplay = () => {
         )}
       </button>
 
-      {/* Arabic Transcription Box */}
-      <div className="mt-16 mb-8">
-        <div className="translation-box w-full max-w-4xl mx-auto h-24 p-6">
-          <div className="h-full overflow-hidden">
-            <div className="text-right dir-rtl space-x-reverse space-x-2 flex flex-wrap-reverse justify-end content-end">
-              <AnimatePresence>
-                {words.map((word, index) => (
-                  <motion.span
-                    key={word.id}
-                    initial={{ opacity: 0, y: 10 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ 
-                      duration: 0.3, 
-                      ease: "easeOut"
-                    }}
-                    className="translation-text inline-block ml-2"
-                  >
-                    {word.text}
-                  </motion.span>
-                ))}
-              </AnimatePresence>
-              
-              {words.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="translation-text text-muted-foreground text-center w-full"
-                >
-                  انتظار النص العربي...
-                </motion.div>
-              )}
-            </div>
-          </div>
-        </div>
-      </div>
+      {/* Transcription toggle */}
+      <button
+        onClick={() => setShowTranscription(!showTranscription)}
+        className="fixed top-6 right-20 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
+        aria-label="Toggle transcription visibility"
+      >
+        {showTranscription ? (
+          <Eye className="w-5 h-5 text-foreground" />
+        ) : (
+          <EyeClosed className="w-5 h-5 text-foreground" />
+        )}
+      </button>
 
-      {/* Translation Box */}
-      <div className="mb-8">
-        <div className="translation-box w-full max-w-4xl mx-auto h-64 p-6">
+      {/* Arabic Transcription Box */}
+      <AnimatePresence>
+        {showTranscription && (
+          <motion.div 
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: 'auto' }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.3, ease: "easeOut" }}
+            className="mt-16 mb-8"
+          >
+            <div className="translation-box w-full max-w-4xl mx-auto h-24 p-6">
+              <div className="h-full overflow-hidden">
+                <div className="text-right dir-rtl space-x-reverse space-x-2 flex flex-wrap-reverse justify-end content-end">
+                  <AnimatePresence>
+                    {words.map((word, index) => (
+                      <motion.span
+                        key={word.id}
+                        initial={{ opacity: 0, y: 10 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -10 }}
+                        transition={{ 
+                          duration: 0.3, 
+                          ease: "easeOut"
+                        }}
+                        className="translation-text inline-block ml-2"
+                      >
+                        {word.text}
+                      </motion.span>
+                    ))}
+                  </AnimatePresence>
+                  
+                  {words.length === 0 && (
+                    <motion.div
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      className="translation-text text-muted-foreground text-center w-full"
+                    >
+                      انتظار النص العربي...
+                    </motion.div>
+                  )}
+                </div>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Translation Box - extends to bottom */}
+      <div className="flex-1 mb-6 flex flex-col">
+        <div 
+          className="translation-box w-full max-w-4xl mx-auto flex-1 p-6"
+          style={{ 
+            minHeight: showTranscription ? 'calc(100vh - 280px)' : 'calc(100vh - 160px)'
+          }}
+        >
           <div 
             ref={scrollRef}
             className="h-full overflow-y-auto scrollbar-hide space-y-3"
