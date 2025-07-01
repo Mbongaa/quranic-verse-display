@@ -241,25 +241,29 @@ const KhutbahDisplay = () => {
               }}
             >
               <AnimatePresence mode="popLayout">
-                {lines.map((line, index) => (
-                  <motion.div
-                    key={line.id}
-                    initial={{ opacity: 0, y: -10 }}
-                    animate={{ opacity: Math.max(0.05, 1 - (index * 0.2)), y: 0 }}
-                    exit={{ opacity: 0, y: -10 }}
-                    transition={{ 
-                      duration: 0.5, 
-                      ease: "easeOut",
-                      delay: 0.05 * index
-                    }}
-                    className="translation-text text-center"
-                    style={{
-                      opacity: Math.max(0.05, 1 - (index * 0.2))
-                    }}
-                  >
-                    {line.text}
-                  </motion.div>
-                ))}
+                {lines.map((line, index) => {
+                  const sizeScale = Math.max(0.3, 1 - (index * 0.2));
+                  return (
+                    <motion.div
+                      key={line.id}
+                      initial={{ opacity: 0, y: -10 }}
+                      animate={{ opacity: Math.max(0.05, 1 - (index * 0.2)), y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ 
+                        duration: 0.5, 
+                        ease: "easeOut",
+                        delay: 0.05 * index
+                      }}
+                      className="translation-text text-center"
+                      style={{
+                        opacity: Math.max(0.05, 1 - (index * 0.2)),
+                        fontSize: `${sizeScale}em`
+                      }}
+                    >
+                      {line.text}
+                    </motion.div>
+                  );
+                })}
               </AnimatePresence>
               
               {lines.length === 0 && (
