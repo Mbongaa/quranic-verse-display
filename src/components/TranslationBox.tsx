@@ -257,7 +257,7 @@ const KhutbahDisplay = () => {
                       className="translation-text text-center"
                       style={{
                         opacity: Math.max(0.05, 1 - (index * 0.2)),
-                        fontSize: `${sizeScale}em`
+                        fontSize: `clamp(${0.875 * sizeScale}rem, ${2.5 * sizeScale}vw, ${3 * sizeScale}rem)`
                       }}
                     >
                       {line.text}
