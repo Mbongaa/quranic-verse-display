@@ -14,7 +14,7 @@ interface TranslationLine {
   timestamp: number;
 }
 
-const TranslationBox = () => {
+const KhutbahDisplay = () => {
   const [words, setWords] = useState<Word[]>([]);
   const [lines, setLines] = useState<TranslationLine[]>([]);
   const [showTranscription, setShowTranscription] = useState(true);
@@ -300,10 +300,9 @@ const TranslationBox = () => {
                       delay: 0.05 * index
                     }}
                     className="translation-text text-left"
-                     style={{
-                       opacity: Math.max(0.05, 1 - (index * 0.2)),
-                       transform: `scale(${Math.max(0.2, 1 - (index * 0.6))})`
-                     }}
+                    style={{
+                      opacity: Math.max(0.05, 1 - (index * 0.2))
+                    }}
                   >
                     {line.text}
                   </motion.div>
@@ -327,4 +326,4 @@ const TranslationBox = () => {
   );
 };
 
-export default TranslationBox;
+export default KhutbahDisplay;
