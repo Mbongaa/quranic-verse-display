@@ -1,5 +1,12 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Moon, Sun } from 'lucide-react';
+
+interface Word {
+  id: string;
+  text: string;
+  timestamp: number;
+}
 
 interface TranslationLine {
   id: string;
@@ -7,115 +14,224 @@ interface TranslationLine {
   timestamp: number;
 }
 
-const TranslationBox = () => {
+const KhutbahDisplay = () => {
+  const [words, setWords] = useState<Word[]>([]);
   const [lines, setLines] = useState<TranslationLine[]>([]);
+  const [isDark, setIsDark] = useState(() => 
+    window.matchMedia('(prefers-color-scheme: dark)').matches
+  );
   const scrollRef = useRef<HTMLDivElement>(null);
 
-  // Demo lines for simulation
+  // Demo Arabic words for simulation
+  const demoWords = [
+    "بِسْمِ", "اللَّهِ", "الرَّحْمَنِ", "الرَّحِيم", "الْحَمْدُ", "لِلَّهِ", "رَبِّ", "الْعَالَمِين",
+    "الرَّحْمَنِ", "الرَّحِيم", "مَالِكِ", "يَوْمِ", "الدِّين", "إِيَّاكَ", "نَعْبُدُ", "وَإِيَّاكَ",
+    "نَسْتَعِين", "اهْدِنَا", "الصِّرَاطَ", "الْمُسْتَقِيم", "صِرَاطَ", "الَّذِينَ", "أَنْعَمْتَ", "عَلَيْهِمْ"
+  ];
+
+  // Demo translations
   const demoLines = [
-    "بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيم",
     "In the name of Allah, the Most Gracious, the Most Merciful",
-    "الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِين",
     "All praise is due to Allah, Lord of all the worlds",
-    "الرَّحْمَنِ الرَّحِيم",
     "The Most Gracious, the Most Merciful",
-    "مَالِكِ يَوْمِ الدِّين",
     "Master of the Day of Judgment",
-    "إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِين",
     "You alone we worship, and You alone we ask for help",
-    "اهْدِنَا الصِّرَاطَ الْمُسْتَقِيم",
     "Guide us on the Straight Path",
-    "صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ",
     "The path of those You have blessed",
-    "غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّين",
     "Not the path of those who have incurred Your wrath, nor of those who have gone astray"
   ];
 
-  // Simulate new lines being added
+  // Toggle dark mode
+  const toggleDarkMode = () => {
+    setIsDark(!isDark);
+    document.documentElement.classList.toggle('dark');
+  };
+
+  // Simulate Arabic words being added
   useEffect(() => {
-    let currentIndex = 0;
+    let currentWordIndex = 0;
+    
+    const addWord = () => {
+      if (currentWordIndex < demoWords.length) {
+        const newWord: Word = {
+          id: `word-${Date.now()}-${currentWordIndex}`,
+          text: demoWords[currentWordIndex],
+          timestamp: Date.now(),
+        };
+        
+        setWords(prev => {
+          const updated = [...prev, newWord];
+          // Keep only the last 20 words for demo
+          return updated.slice(-20);
+        });
+        
+        currentWordIndex++;
+      } else {
+        // Reset and start over
+        currentWordIndex = 0;
+        setWords([]);
+      }
+    };
+
+    // Add first word immediately
+    addWord();
+    
+    // Then add a new word every 0.5 seconds
+    const interval = setInterval(addWord, 500);
+    
+    return () => clearInterval(interval);
+  }, []);
+
+  // Simulate translation lines being added
+  useEffect(() => {
+    let currentLineIndex = 0;
     
     const addLine = () => {
-      if (currentIndex < demoLines.length) {
+      if (currentLineIndex < demoLines.length) {
         const newLine: TranslationLine = {
-          id: `line-${Date.now()}-${currentIndex}`,
-          text: demoLines[currentIndex],
+          id: `line-${Date.now()}-${currentLineIndex}`,
+          text: demoLines[currentLineIndex],
           timestamp: Date.now(),
         };
         
         setLines(prev => {
           const updated = [...prev, newLine];
-          // Keep only the last 10 lines for demo
-          return updated.slice(-10);
+          // Keep only the last 8 lines for demo
+          return updated.slice(-8);
         });
         
-        currentIndex++;
+        currentLineIndex++;
       } else {
         // Reset and start over
-        currentIndex = 0;
+        currentLineIndex = 0;
         setLines([]);
       }
     };
 
-    // Add first line immediately
-    addLine();
+    // Add first line after 1 second
+    const timeout = setTimeout(addLine, 1000);
     
     // Then add a new line every 3 seconds
     const interval = setInterval(addLine, 3000);
     
-    return () => clearInterval(interval);
+    return () => {
+      clearTimeout(timeout);
+      clearInterval(interval);
+    };
   }, []);
 
-  // Auto-scroll to bottom when new lines are added
+  // Auto-scroll translation box to bottom when new lines are added
   useEffect(() => {
     if (scrollRef.current) {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
     }
   }, [lines]);
 
+  // Apply dark mode class on mount based on initial state
+  useEffect(() => {
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, []);
+
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="translation-box w-full max-w-2xl h-64 p-6 animate-glow">
-        <div 
-          ref={scrollRef}
-          className="h-full overflow-y-auto scrollbar-hide space-y-3"
-          style={{
-            scrollbarWidth: 'none',
-            msOverflowStyle: 'none',
-          }}
-        >
-          <AnimatePresence mode="popLayout">
-            {lines.map((line, index) => (
+    <div className="min-h-screen bg-gradient-to-br from-background via-background to-card p-6">
+      {/* Dark mode toggle */}
+      <button
+        onClick={toggleDarkMode}
+        className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors"
+        aria-label="Toggle dark mode"
+      >
+        {isDark ? (
+          <Sun className="w-5 h-5 text-foreground" />
+        ) : (
+          <Moon className="w-5 h-5 text-foreground" />
+        )}
+      </button>
+
+      {/* Arabic Transcription Box */}
+      <div className="mt-16 mb-8">
+        <div className="translation-box w-full max-w-4xl mx-auto h-24 p-6">
+          <div className="h-full overflow-hidden">
+            <div className="text-right dir-rtl space-x-reverse space-x-2 flex flex-wrap-reverse justify-end content-end">
+              <AnimatePresence>
+                {words.map((word, index) => (
+                  <motion.span
+                    key={word.id}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ 
+                      duration: 0.3, 
+                      ease: "easeOut"
+                    }}
+                    className="translation-text inline-block ml-2"
+                  >
+                    {word.text}
+                  </motion.span>
+                ))}
+              </AnimatePresence>
+              
+              {words.length === 0 && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="translation-text text-muted-foreground text-center w-full"
+                >
+                  انتظار النص العربي...
+                </motion.div>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Translation Box */}
+      <div className="mb-8">
+        <div className="translation-box w-full max-w-4xl mx-auto h-64 p-6">
+          <div 
+            ref={scrollRef}
+            className="h-full overflow-y-auto scrollbar-hide space-y-3"
+            style={{
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+            }}
+          >
+            <AnimatePresence mode="popLayout">
+              {lines.map((line, index) => (
+                <motion.div
+                  key={line.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  transition={{ 
+                    duration: 0.5, 
+                    ease: "easeOut",
+                    delay: 0.1 * (index % 3)
+                  }}
+                  className="translation-text text-left"
+                >
+                  {line.text}
+                </motion.div>
+              ))}
+            </AnimatePresence>
+            
+            {lines.length === 0 && (
               <motion.div
-                key={line.id}
-                initial={{ opacity: 0, y: 10 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -10 }}
-                transition={{ 
-                  duration: 0.5, 
-                  ease: "easeOut",
-                  delay: 0.1 * (index % 3) // Stagger animation for visual appeal
-                }}
-                className="translation-text"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="translation-text text-muted-foreground text-center"
               >
-                {line.text}
+                Waiting for translation...
               </motion.div>
-            ))}
-          </AnimatePresence>
-          
-          {lines.length === 0 && (
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              className="translation-text text-muted-foreground text-center"
-            >
-              Waiting for translation...
-            </motion.div>
-          )}
+            )}
+          </div>
         </div>
       </div>
     </div>
   );
 };
 
-export default TranslationBox;
+export default KhutbahDisplay;
