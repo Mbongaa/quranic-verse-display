@@ -302,7 +302,7 @@ const KhutbahDisplay = () => {
                     className="translation-text text-left"
                     style={{
                       opacity: Math.max(0.05, 1 - (index * 0.2)),
-                      transform: `scale(${Math.max(0.85, 1 - (index * 0.05))})`
+                      transform: `scale(${Math.max(0.7, 1 - (index * 0.08))})`
                     }}
                   >
                     {line.text}
