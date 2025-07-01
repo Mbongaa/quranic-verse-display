@@ -108,6 +108,8 @@
   }
   
   .translation-text {
-    @apply text-foreground text-lg leading-relaxed;
+    @apply text-foreground text-sm sm:text-base md:text-lg lg:text-xl xl:text-2xl leading-relaxed;
+    word-wrap: break-word;
+    hyphens: auto;
   }
 }

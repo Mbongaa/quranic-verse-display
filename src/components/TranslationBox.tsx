@@ -231,7 +231,7 @@ const KhutbahDisplay = () => {
       <div className="mt-16 flex-1 mb-6 flex flex-col">
         {/* Translation Box - fills remaining space */}
         <div className="flex-1 flex flex-col mb-8">
-          <div className="translation-box w-full max-w-4xl mx-auto flex-1 p-6">
+          <div className="translation-box w-full max-w-7xl mx-auto flex-1 p-3 sm:p-4 md:p-6">
             <div 
               ref={scrollRef}
               className="h-full overflow-y-auto scrollbar-hide space-y-3"
@@ -284,7 +284,7 @@ const KhutbahDisplay = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <div className="translation-box w-full max-w-4xl mx-auto h-24 p-6">
+              <div className="translation-box w-full max-w-7xl mx-auto h-16 sm:h-20 md:h-24 lg:h-28 p-3 sm:p-4 md:p-6">
                 <div className="h-full overflow-hidden">
                   <div className="text-right dir-rtl space-x-reverse space-x-2 flex flex-wrap-reverse justify-end content-end">
                     <AnimatePresence>
