@@ -77,10 +77,7 @@ const KhutbahDisplay = () => {
           
           setWords(prev => {
             const updated = [...prev, newWord];
-            // Clear line if it gets too long (start fresh to prevent overflow)
-            if (updated.length > 8) {
-              return [newWord];
-            }
+            // Keep accumulating words to fill the box
             return updated;
           });
         } else if (data.type === 'translation') {
@@ -143,10 +140,7 @@ const KhutbahDisplay = () => {
         
         setWords(prev => {
           const updated = [...prev, newWord];
-          // Clear line if it gets too long (start fresh to prevent overflow)
-          if (updated.length > 8) {
-            return [newWord];
-          }
+          // Keep accumulating words to fill the box
           return updated;
         });
         
