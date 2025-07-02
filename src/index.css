@@ -96,13 +96,15 @@
   }
 
   body {
-    @apply bg-background text-foreground font-medium;
+    @apply bg-gradient-to-br from-background via-background to-card text-foreground font-medium;
+    background-attachment: fixed;
   }
 }
 
 @layer utilities {
   .translation-box {
     @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl;
+    box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
   }
   
   .translation-text {
