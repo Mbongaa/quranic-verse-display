@@ -276,7 +276,7 @@ const KhutbahDisplay = () => {
               <AnimatePresence mode="popLayout">
                 {lines.map((line, index) => {
                   // Make the first line much larger and more prominent
-                  const sizeScale = index === 0 ? 1.8 : Math.max(0.5, 1 - (index * 0.12));
+                  const sizeScale = index === 0 ? 1.6 : Math.max(0.5, 1 - (index * 0.12));
                   const spacing = index === 0 ? "mb-8" : "mb-2";
                   
                   return (
