@@ -226,7 +226,7 @@ const KhutbahDisplay = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-card p-6 flex flex-col">
+    <div className="min-h-screen bg-background p-6 flex flex-col">
       {/* Dark mode toggle */}
       <button
         onClick={toggleDarkMode}
