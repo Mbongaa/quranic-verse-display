@@ -234,7 +234,7 @@ const KhutbahDisplay = () => {
         
         {/* Centered Bismillah */}
         <div className="flex-1 text-center">
-          <h1 className="font-amiri text-2xl md:text-3xl lg:text-4xl text-foreground" dir="rtl">
+          <h1 className="font-amiri text-lg md:text-xl lg:text-2xl text-foreground" dir="rtl">
             بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
           </h1>
         </div>
