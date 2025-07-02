@@ -77,7 +77,10 @@ const KhutbahDisplay = () => {
           
           setWords(prev => {
             const updated = [...prev, newWord];
-            // Keep accumulating words to fill the box
+            // Clear line if it gets too long horizontally (start fresh to prevent overflow)
+            if (updated.length > 12) {
+              return [newWord];
+            }
             return updated;
           });
         } else if (data.type === 'translation') {
@@ -140,7 +143,10 @@ const KhutbahDisplay = () => {
         
         setWords(prev => {
           const updated = [...prev, newWord];
-          // Keep accumulating words to fill the box
+          // Clear line if it gets too long horizontally (start fresh to prevent overflow)
+          if (updated.length > 12) {
+            return [newWord];
+          }
           return updated;
         });
         
@@ -302,7 +308,7 @@ const KhutbahDisplay = () => {
               <div className="translation-box w-full max-w-7xl mx-auto h-16 sm:h-20 md:h-24 lg:h-28 p-3 sm:p-4 md:p-6">
                 <div className="h-full overflow-hidden flex items-center justify-center">
                   <div className="w-full text-right" dir="rtl">
-                    <div className="inline-flex flex-wrap gap-2 justify-end">
+                    <div className="inline-flex gap-2 justify-end whitespace-nowrap">
                       <AnimatePresence>
                         {words.map((word, index) => (
                           <motion.span
