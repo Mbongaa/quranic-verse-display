@@ -22,7 +22,9 @@ const KhutbahDisplay = () => {
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
   const [isDevMode, setIsDevMode] = useState(false);
+  const [currentLineWords, setCurrentLineWords] = useState<Word[]>([]);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const arabicLineRef = useRef<HTMLDivElement>(null);
 
   // Demo Arabic words for simulation
   const demoWords = [
@@ -75,10 +77,16 @@ const KhutbahDisplay = () => {
             timestamp: data.timestamp || Date.now(),
           };
           
-          setWords(prev => {
+          setCurrentLineWords(prev => {
             const updated = [...prev, newWord];
-            // Keep only the last 30 words for display
-            return updated.slice(-30);
+            
+            // Use a simple heuristic: if we have more than 8 words, start fresh
+            // This prevents overflow in most cases for the single line display
+            if (updated.length > 8) {
+              return [newWord]; // Start fresh with just the new word
+            }
+            
+            return updated;
           });
         } else if (data.type === 'translation') {
           // Handle incoming translation lines - complete sentences
@@ -138,15 +146,21 @@ const KhutbahDisplay = () => {
           timestamp: Date.now(),
         };
         
-        setWords(prev => {
+        setCurrentLineWords(prev => {
           const updated = [...prev, newWord];
-          return updated.slice(-30);
+          
+          // Reset line when we have too many words for single line
+          if (updated.length > 8) {
+            return [newWord];
+          }
+          
+          return updated;
         });
         
         wordIndex++;
       } else {
         wordIndex = 0;
-        setWords([]);
+        setCurrentLineWords([]);
       }
     };
 
@@ -301,9 +315,9 @@ const KhutbahDisplay = () => {
               <div className="translation-box w-full max-w-7xl mx-auto h-16 sm:h-20 md:h-24 lg:h-28 p-3 sm:p-4 md:p-6">
                 <div className="h-full overflow-hidden flex items-center">
                   <div className="w-full text-right" dir="rtl">
-                    <div className="inline-flex flex-wrap gap-2 justify-end">
+                    <div className="inline-flex items-center gap-2 justify-end whitespace-nowrap overflow-hidden">
                       <AnimatePresence>
-                        {words.map((word, index) => (
+                        {currentLineWords.map((word, index) => (
                           <motion.span
                             key={word.id}
                             initial={{ opacity: 0, y: 10 }}
@@ -313,7 +327,7 @@ const KhutbahDisplay = () => {
                               duration: 0.3, 
                               ease: "easeOut"
                             }}
-                            className="translation-text"
+                            className="translation-text shrink-0"
                           >
                             {word.text}
                           </motion.span>
@@ -321,7 +335,7 @@ const KhutbahDisplay = () => {
                       </AnimatePresence>
                     </div>
                     
-                    {words.length === 0 && (
+                    {currentLineWords.length === 0 && (
                       <motion.div
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
