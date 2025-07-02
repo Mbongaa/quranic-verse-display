@@ -227,45 +227,61 @@ const KhutbahDisplay = () => {
 
   return (
     <div className="min-h-screen bg-background p-6 flex flex-col">
-      {/* Dark mode toggle */}
-      <button
-        onClick={toggleDarkMode}
-        className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
-        aria-label="Toggle dark mode"
-      >
-        {isDark ? (
-          <Sun className="w-5 h-5 text-foreground" />
-        ) : (
-          <Moon className="w-5 h-5 text-foreground" />
-        )}
-      </button>
+      {/* Header with Bismillah and controls */}
+      <div className="flex items-center justify-between mb-8">
+        {/* Left spacer */}
+        <div className="flex-1"></div>
+        
+        {/* Centered Bismillah */}
+        <div className="flex-1 text-center">
+          <h1 className="font-amiri text-2xl md:text-3xl lg:text-4xl text-foreground" dir="rtl">
+            بِسْمِ اللَّهِ الرَّحْمَنِ الرَّحِيمِ
+          </h1>
+        </div>
+        
+        {/* Right controls */}
+        <div className="flex-1 flex justify-end items-center gap-2">
+          {/* Dev mode toggle */}
+          <button
+            onClick={() => setIsDevMode(!isDevMode)}
+            className={`p-3 rounded-full border border-border/30 hover:bg-card/30 transition-colors ${
+              isDevMode ? 'bg-primary/20 text-primary' : 'bg-card/20 text-foreground'
+            }`}
+            aria-label="Toggle dev mode"
+          >
+            <ListCollapse className="w-5 h-5" />
+          </button>
 
-      {/* Transcription toggle */}
-      <button
-        onClick={() => setShowTranscription(!showTranscription)}
-        className="fixed top-6 right-20 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
-        aria-label="Toggle transcription visibility"
-      >
-        {showTranscription ? (
-          <Eye className="w-5 h-5 text-foreground" />
-        ) : (
-          <EyeClosed className="w-5 h-5 text-foreground" />
-        )}
-      </button>
+          {/* Transcription toggle */}
+          <button
+            onClick={() => setShowTranscription(!showTranscription)}
+            className="p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors"
+            aria-label="Toggle transcription visibility"
+          >
+            {showTranscription ? (
+              <Eye className="w-5 h-5 text-foreground" />
+            ) : (
+              <EyeClosed className="w-5 h-5 text-foreground" />
+            )}
+          </button>
 
-      {/* Dev mode toggle */}
-      <button
-        onClick={() => setIsDevMode(!isDevMode)}
-        className={`fixed top-6 right-36 p-3 rounded-full border border-border/30 hover:bg-card/30 transition-colors z-10 ${
-          isDevMode ? 'bg-primary/20 text-primary' : 'bg-card/20 text-foreground'
-        }`}
-        aria-label="Toggle dev mode"
-      >
-        <ListCollapse className="w-5 h-5" />
-      </button>
+          {/* Dark mode toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors"
+            aria-label="Toggle dark mode"
+          >
+            {isDark ? (
+              <Sun className="w-5 h-5 text-foreground" />
+            ) : (
+              <Moon className="w-5 h-5 text-foreground" />
+            )}
+          </button>
+        </div>
+      </div>
 
       {/* Container for both boxes with consistent spacing */}
-      <div className="mt-16 flex-1 mb-6 flex flex-col">
+      <div className="flex-1 mb-6 flex flex-col">
         {/* Translation Box - fixed height to prevent pushing down Arabic box */}
         <div className="mb-8">
           <div className="translation-box w-full max-w-7xl mx-auto h-[calc(100vh-280px)] p-3 sm:p-4 md:p-6">

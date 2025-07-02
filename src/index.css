@@ -6,9 +6,9 @@
 
 @layer base {
   :root {
-    /* Islamic pink soft background with dark teal green text */
+    /* Islamic pink soft background with teal-800 text */
     --background: 330 45% 96%;
-    --foreground: 180 65% 15%;
+    --foreground: 180 85% 20%;
 
     --card: 330 35% 94%;
     --card-foreground: 180 65% 15%;
