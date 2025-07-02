@@ -307,8 +307,8 @@ const KhutbahDisplay = () => {
             >
               <div className="translation-box w-full max-w-7xl mx-auto h-16 sm:h-20 md:h-24 lg:h-28 p-3 sm:p-4 md:p-6">
                 <div className="h-full overflow-hidden flex items-center justify-center">
-                  <div className="w-full text-center" dir="rtl">
-                    <div className="inline-flex gap-2 justify-center whitespace-nowrap">
+                  <div className="w-full text-right" dir="rtl">
+                    <div className="inline-flex flex-wrap gap-2 justify-end">
                       <AnimatePresence>
                         {words.map((word, index) => (
                           <motion.span
