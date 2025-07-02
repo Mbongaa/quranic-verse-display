@@ -271,11 +271,14 @@ const KhutbahDisplay = () => {
           <div className="translation-box w-full max-w-7xl mx-auto flex-1 p-3 sm:p-4 md:p-6">
             <div 
               ref={scrollRef}
-              className="h-full overflow-hidden space-y-2 flex flex-col justify-start items-center pt-[10%]"
+              className="h-full overflow-hidden flex flex-col justify-start items-center pt-[10%]"
             >
               <AnimatePresence mode="popLayout">
                 {lines.map((line, index) => {
-                  const sizeScale = Math.max(0.6, 1 - (index * 0.1));
+                  // Make the first line much larger and more prominent
+                  const sizeScale = index === 0 ? 1.8 : Math.max(0.5, 1 - (index * 0.12));
+                  const spacing = index === 0 ? "mb-8" : "mb-2";
+                  
                   return (
                     <motion.div
                       key={line.id}
@@ -287,10 +290,10 @@ const KhutbahDisplay = () => {
                         ease: "easeOut",
                         delay: 0.05 * index
                       }}
-                      className="translation-text text-center"
+                      className={`translation-text text-center ${spacing}`}
                       style={{
                         opacity: Math.max(0.15, 1 - (index * 0.1)),
-                        fontSize: `clamp(${0.875 * sizeScale}rem, ${2.5 * sizeScale}vw, ${3 * sizeScale}rem)`
+                        fontSize: `clamp(${1.125 * sizeScale}rem, ${3.5 * sizeScale}vw, ${4.5 * sizeScale}rem)`
                       }}
                     >
                       {line.text}
