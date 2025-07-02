@@ -20,7 +20,6 @@ export default {
 		extend: {
 			fontFamily: {
 				'noto': ['Noto Sans', 'Noto Sans Arabic', 'sans-serif'],
-				'amiri': ['Amiri', 'serif'],
 			},
 			colors: {
 				border: 'hsl(var(--border))',
