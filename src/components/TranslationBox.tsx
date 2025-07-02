@@ -234,11 +234,7 @@ const KhutbahDisplay = () => {
           <div className="translation-box w-full max-w-7xl mx-auto flex-1 p-3 sm:p-4 md:p-6">
             <div 
               ref={scrollRef}
-              className="h-full overflow-y-auto scrollbar-hide space-y-2 flex flex-col justify-end items-center pb-16"
-              style={{
-                scrollbarWidth: 'none',
-                msOverflowStyle: 'none',
-              }}
+              className="h-full overflow-hidden space-y-2 flex flex-col justify-start items-center pt-[10%]"
             >
               <AnimatePresence mode="popLayout">
                 {lines.map((line, index) => {
