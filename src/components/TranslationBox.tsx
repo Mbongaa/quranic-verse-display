@@ -230,11 +230,11 @@ const KhutbahDisplay = () => {
       {/* Container for both boxes with consistent spacing */}
       <div className="mt-16 flex-1 mb-6 flex flex-col">
         {/* Translation Box - fills remaining space */}
-        <div className="h-[600px] flex flex-col mb-8">
-          <div className="translation-box w-full max-w-7xl mx-auto h-full p-3 sm:p-4 md:p-6">
+        <div className="flex-1 flex flex-col mb-8">
+          <div className="translation-box w-full max-w-7xl mx-auto flex-1 p-3 sm:p-4 md:p-6">
             <div 
               ref={scrollRef}
-              className="h-full overflow-y-auto scrollbar-hide space-y-2 flex flex-col justify-start items-center pt-[30%]"
+              className="h-full overflow-y-auto scrollbar-hide space-y-2 flex flex-col justify-end items-center pb-16"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
