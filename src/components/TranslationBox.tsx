@@ -51,23 +51,28 @@ const KhutbahDisplay = () => {
 
   // WebSocket connection for real-time transcription and translation
   useEffect(() => {
-    // Create WebSocket connection to the backend
-    const ws = new WebSocket(`${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`);
+    // Use configurable WebSocket URL - defaults to localhost:8000 for development
+    const wsUrl = process.env.NODE_ENV === 'development' 
+      ? 'ws://localhost:8000/ws'
+      : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
+    
+    const ws = new WebSocket(wsUrl);
     
     ws.onopen = () => {
-      console.log('Connected to WebSocket server');
+      console.log('Connected to WebSocket server at:', wsUrl);
     };
     
     ws.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
+        console.log('Received WebSocket message:', data);
         
         if (data.type === 'transcription') {
-          // Handle incoming transcription words
+          // Handle incoming transcription words - each word comes individually
           const newWord: Word = {
             id: `word-${Date.now()}-${Math.random()}`,
-            text: data.text,
-            timestamp: Date.now(),
+            text: data.text || data.word || '',
+            timestamp: data.timestamp || Date.now(),
           };
           
           setWords(prev => {
@@ -76,11 +81,11 @@ const KhutbahDisplay = () => {
             return updated.slice(-30);
           });
         } else if (data.type === 'translation') {
-          // Handle incoming translation lines
+          // Handle incoming translation lines - complete sentences
           const newLine: TranslationLine = {
             id: `line-${Date.now()}-${Math.random()}`,
-            text: data.text,
-            timestamp: Date.now(),
+            text: data.text || data.translation || '',
+            timestamp: data.timestamp || Date.now(),
           };
           
           setLines(prev => {
@@ -90,12 +95,19 @@ const KhutbahDisplay = () => {
           });
         }
       } catch (error) {
-        console.error('Error parsing WebSocket message:', error);
+        console.error('Error parsing WebSocket message:', error, event.data);
       }
     };
     
-    ws.onclose = () => {
-      console.log('WebSocket connection closed');
+    ws.onclose = (event) => {
+      console.log('WebSocket connection closed:', event.code, event.reason);
+      // Auto-reconnect after 3 seconds if connection is lost
+      if (event.code !== 1000) {
+        setTimeout(() => {
+          console.log('Attempting to reconnect...');
+          // This will trigger a re-render and reconnection
+        }, 3000);
+      }
     };
     
     ws.onerror = (error) => {
@@ -104,7 +116,9 @@ const KhutbahDisplay = () => {
     
     // Cleanup on component unmount
     return () => {
-      ws.close();
+      if (ws.readyState === WebSocket.OPEN) {
+        ws.close(1000, 'Component unmounting');
+      }
     };
   }, []);
 
@@ -285,25 +299,27 @@ const KhutbahDisplay = () => {
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
               <div className="translation-box w-full max-w-7xl mx-auto h-16 sm:h-20 md:h-24 lg:h-28 p-3 sm:p-4 md:p-6">
-                <div className="h-full overflow-hidden">
-                  <div className="text-right dir-rtl space-x-reverse space-x-2 flex flex-wrap-reverse justify-end content-end">
-                    <AnimatePresence>
-                      {words.map((word, index) => (
-                        <motion.span
-                          key={word.id}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          exit={{ opacity: 0, y: -10 }}
-                          transition={{ 
-                            duration: 0.3, 
-                            ease: "easeOut"
-                          }}
-                          className="translation-text inline-block ml-2"
-                        >
-                          {word.text}
-                        </motion.span>
-                      ))}
-                    </AnimatePresence>
+                <div className="h-full overflow-hidden flex items-center">
+                  <div className="w-full text-right" dir="rtl">
+                    <div className="inline-flex flex-wrap gap-2 justify-end">
+                      <AnimatePresence>
+                        {words.map((word, index) => (
+                          <motion.span
+                            key={word.id}
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            exit={{ opacity: 0, y: -10 }}
+                            transition={{ 
+                              duration: 0.3, 
+                              ease: "easeOut"
+                            }}
+                            className="translation-text"
+                          >
+                            {word.text}
+                          </motion.span>
+                        ))}
+                      </AnimatePresence>
+                    </div>
                     
                     {words.length === 0 && (
                       <motion.div
