@@ -23,6 +23,8 @@ const KhutbahDisplay = () => {
   );
   const [isDevMode, setIsDevMode] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const textContainerRef = useRef<HTMLDivElement>(null);
+  const textContentRef = useRef<HTMLDivElement>(null);
 
   // Demo Arabic words for simulation
   const demoWords = [
@@ -42,6 +44,16 @@ const KhutbahDisplay = () => {
     "The path of those You have blessed",
     "Not the path of those who have incurred Your wrath, nor of those who have gone astray"
   ];
+
+  // Check if text overflows container width
+  const checkTextOverflow = () => {
+    if (!textContainerRef.current || !textContentRef.current) return false;
+    
+    const containerWidth = textContainerRef.current.offsetWidth;
+    const contentWidth = textContentRef.current.scrollWidth;
+    
+    return contentWidth > containerWidth;
+  };
 
   // Toggle dark mode
   const toggleDarkMode = () => {
@@ -77,10 +89,12 @@ const KhutbahDisplay = () => {
           
           setWords(prev => {
             const updated = [...prev, newWord];
-            // Clear line if it gets too long horizontally (start fresh to prevent overflow)
-            if (updated.length > 12) {
-              return [newWord];
-            }
+            // Check on next frame if text overflows after adding this word
+            setTimeout(() => {
+              if (checkTextOverflow()) {
+                setWords([newWord]);
+              }
+            }, 0);
             return updated;
           });
         } else if (data.type === 'translation') {
@@ -143,10 +157,12 @@ const KhutbahDisplay = () => {
         
         setWords(prev => {
           const updated = [...prev, newWord];
-          // Clear line if it gets too long horizontally (start fresh to prevent overflow)
-          if (updated.length > 12) {
-            return [newWord];
-          }
+          // Check on next frame if text overflows after adding this word
+          setTimeout(() => {
+            if (checkTextOverflow()) {
+              setWords([newWord]);
+            }
+          }, 0);
           return updated;
         });
         
@@ -306,9 +322,9 @@ const KhutbahDisplay = () => {
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
               <div className="translation-box w-full max-w-7xl mx-auto h-16 sm:h-20 md:h-24 lg:h-28 p-3 sm:p-4 md:p-6">
-                <div className="h-full overflow-hidden flex items-center justify-center">
+                <div ref={textContainerRef} className="h-full overflow-hidden flex items-center justify-center">
                   <div className="w-full text-right" dir="rtl">
-                    <div className="inline-flex gap-2 justify-end whitespace-nowrap">
+                    <div ref={textContentRef} className="inline-flex gap-2 justify-end whitespace-nowrap">
                       <AnimatePresence>
                         {words.map((word, index) => (
                           <motion.span
