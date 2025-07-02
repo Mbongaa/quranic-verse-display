@@ -238,7 +238,7 @@ const KhutbahDisplay = () => {
             >
               <AnimatePresence mode="popLayout">
                 {lines.map((line, index) => {
-                  const sizeScale = Math.max(0.3, 1 - (index * 0.1));
+                  const sizeScale = Math.max(0.6, 1 - (index * 0.1));
                   return (
                     <motion.div
                       key={line.id}
