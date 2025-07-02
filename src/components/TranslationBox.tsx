@@ -85,8 +85,8 @@ const KhutbahDisplay = () => {
           
           setLines(prev => {
             const updated = [newLine, ...prev];
-            // Keep only the first 10 lines for display (newest at top)
-            return updated.slice(0, 10);
+            // Keep only the first 15 lines for display (newest at top)
+            return updated.slice(0, 15);
           });
         }
       } catch (error) {
@@ -147,7 +147,7 @@ const KhutbahDisplay = () => {
         
         setLines(prev => {
           const updated = [newLine, ...prev];
-          return updated.slice(0, 10);
+          return updated.slice(0, 15);
         });
         
         lineIndex++;
@@ -234,7 +234,7 @@ const KhutbahDisplay = () => {
           <div className="translation-box w-full max-w-7xl mx-auto flex-1 p-3 sm:p-4 md:p-6">
             <div 
               ref={scrollRef}
-              className="h-full overflow-y-auto scrollbar-hide space-y-3"
+              className="h-full overflow-y-auto scrollbar-hide space-y-2 flex flex-col justify-center"
               style={{
                 scrollbarWidth: 'none',
                 msOverflowStyle: 'none',
@@ -247,7 +247,7 @@ const KhutbahDisplay = () => {
                     <motion.div
                       key={line.id}
                       initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: Math.max(0.05, 1 - (index * 0.2)), y: 0 }}
+                      animate={{ opacity: Math.max(0.15, 1 - (index * 0.1)), y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       transition={{ 
                         duration: 0.5, 
@@ -256,7 +256,7 @@ const KhutbahDisplay = () => {
                       }}
                       className="translation-text text-center"
                       style={{
-                        opacity: Math.max(0.05, 1 - (index * 0.2)),
+                        opacity: Math.max(0.15, 1 - (index * 0.1)),
                         fontSize: `clamp(${0.875 * sizeScale}rem, ${2.5 * sizeScale}vw, ${3 * sizeScale}rem)`
                       }}
                     >
