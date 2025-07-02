@@ -96,7 +96,7 @@
   }
 
   body {
-    @apply bg-gradient-to-br from-background via-background to-card text-foreground font-medium;
+    @apply bg-background text-foreground font-medium;
     background-attachment: fixed;
   }
 }
