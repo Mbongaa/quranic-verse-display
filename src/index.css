@@ -120,6 +120,7 @@
     font-size: clamp(1.25rem, 2.5vw, 3.25rem);
     height: min(11em, 40vh);
     max-height: 40vh;
+    scroll-behavior: smooth;
   }
 
   .translation-container::before {
