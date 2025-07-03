@@ -272,7 +272,7 @@ const KhutbahDisplay = () => {
           <div className="translation-box w-full max-w-7xl mx-auto h-[calc(100vh-280px)]">
             <div 
               ref={translationScrollRef}
-              className="h-full max-h-[60vh] p-4 overflow-y-auto scrollbar-hide"
+              className="h-full max-h-[60vh] p-4 overflow-y-auto scrollbar-hide flex flex-col justify-end"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               <div className="text-left text-lg md:text-xl leading-relaxed">
