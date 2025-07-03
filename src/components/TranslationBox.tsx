@@ -323,7 +323,7 @@ const KhutbahDisplay = () => {
         {/* 3. Dutch Translation Box - Bottom */}
         <div 
           ref={translationScrollRef}
-          className="translation-box w-[calc(100vw-3rem)] mx-auto h-[40vh] overflow-y-auto scrollbar-hide flex flex-col justify-end p-4"
+          className="translation-box w-[calc(100vw-3rem)] mx-auto h-[40em] overflow-y-auto scrollbar-hide flex flex-col justify-end p-4"
         >
           <div className="text-left translation-text">
             {lines.length > 0 ? (
