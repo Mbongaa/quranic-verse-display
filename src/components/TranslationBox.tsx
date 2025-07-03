@@ -321,21 +321,18 @@ const KhutbahDisplay = () => {
         </div>
 
         {/* 3. Dutch Translation Box - Bottom */}
-        <div className="translation-box w-full max-w-7xl mx-auto max-h-[40vh] overflow-y-auto scrollbar-hide flex flex-col justify-end p-4">
+        <div 
+          ref={translationScrollRef}
+          className="translation-box w-full max-w-7xl mx-auto max-h-[40vh] overflow-y-auto scrollbar-hide flex flex-col justify-end p-4"
+        >
           <div className="text-left text-lg md:text-xl leading-relaxed">
             {lines.length > 0 ? (
               <motion.p
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 className="text-foreground"
-                ref={translationScrollRef}
               >
-                {lines.map((line, index) => (
-                  <span key={line.id}>
-                    {line.text}
-                    {index < lines.length - 1 ? ' ' : ''}
-                  </span>
-                ))}
+                {lines.map(line => line.text).join(' ')}
               </motion.p>
             ) : (
               <motion.div
