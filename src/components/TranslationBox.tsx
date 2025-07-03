@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Moon, Sun, Eye, EyeClosed, ListCollapse } from 'lucide-react';
+import { splitIntoChunks, calculateReadingDelay } from '@/utils/textAnimator';
 
 interface Word {
   id: string;
@@ -327,13 +328,32 @@ const KhutbahDisplay = () => {
         >
           <div className="text-left translation-text">
             {lines.length > 0 ? (
-              <motion.p
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-foreground"
-              >
-                {lines.map(line => line.text).join(' ')}
-              </motion.p>
+              <div className="space-y-2">
+                {lines.map((line, lineIndex) => {
+                  const chunks = splitIntoChunks(line.text);
+                  return (
+                    <div key={line.id} className="flex flex-wrap gap-1">
+                      <AnimatePresence>
+                        {chunks.map((chunk, chunkIndex) => (
+                          <motion.span
+                            key={`${line.id}-chunk-${chunkIndex}`}
+                            initial={{ opacity: 0, y: 5 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            transition={{
+                              duration: 0.3,
+                              ease: "easeOut",
+                              delay: chunkIndex * 0.15 // 150ms stagger between chunks
+                            }}
+                            className="text-foreground"
+                          >
+                            {chunk}
+                          </motion.span>
+                        ))}
+                      </AnimatePresence>
+                    </div>
+                  );
+                })}
+              </div>
             ) : (
               <motion.div
                 initial={{ opacity: 0 }}
