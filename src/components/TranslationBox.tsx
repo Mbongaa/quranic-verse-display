@@ -265,45 +265,9 @@ const KhutbahDisplay = () => {
         <ListCollapse className="w-5 h-5" />
       </button>
 
-      {/* Container for both boxes with consistent spacing */}
-      <div className="mt-16 flex-1 mb-6 flex flex-col">
-        {/* Translation Box - scrollable paragraph accumulation */}
-        <div className="mb-8">
-          <div className="translation-box w-full max-w-7xl mx-auto h-[calc(100vh-280px)]">
-            <div 
-              ref={translationScrollRef}
-              className="h-full max-h-[60vh] p-4 overflow-y-auto scrollbar-hide flex flex-col justify-end"
-              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
-            >
-              <div className="text-left text-lg md:text-xl leading-relaxed">
-                {lines.length > 0 ? (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-foreground"
-                  >
-                    {lines.map((line, index) => (
-                      <span key={line.id}>
-                        {line.text}
-                        {index < lines.length - 1 ? ' ' : ''}
-                      </span>
-                    ))}
-                  </motion.p>
-                ) : (
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-muted-foreground text-center"
-                  >
-                    Waiting for translation...
-                  </motion.div>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Arabic Transcription Box */}
+      {/* Container for three vertical sections */}
+      <div className="mt-16 flex-1 mb-6 flex flex-col gap-4 p-4">
+        {/* 1. Arabic Transcription Box - Top */}
         <AnimatePresence>
           {showTranscription && (
             <motion.div 
@@ -312,7 +276,7 @@ const KhutbahDisplay = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <div className="translation-box w-full max-w-7xl mx-auto h-16 sm:h-20 md:h-24 lg:h-28 p-3 sm:p-4 md:p-6">
+              <div className="translation-box w-full max-w-7xl mx-auto h-20 sm:h-24 p-3 sm:p-4 md:p-6">
                 <div ref={textContainerRef} className="h-full overflow-hidden flex items-center justify-center">
                   <div className="w-full text-right" dir="rtl">
                     <div ref={textContentRef} className="inline-flex gap-2 justify-end whitespace-nowrap">
@@ -350,6 +314,40 @@ const KhutbahDisplay = () => {
             </motion.div>
           )}
         </AnimatePresence>
+
+        {/* 2. Camera Feed Placeholder - Middle */}
+        <div className="w-full max-w-7xl mx-auto h-[30vh] bg-black rounded-xl shadow-inner flex items-center justify-center">
+          <span className="text-gray-400 text-lg">Visuals / Camera Feed Area</span>
+        </div>
+
+        {/* 3. Dutch Translation Box - Bottom */}
+        <div className="translation-box w-full max-w-7xl mx-auto max-h-[40vh] overflow-y-auto scrollbar-hide flex flex-col justify-end p-4">
+          <div className="text-left text-lg md:text-xl leading-relaxed">
+            {lines.length > 0 ? (
+              <motion.p
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-foreground"
+                ref={translationScrollRef}
+              >
+                {lines.map((line, index) => (
+                  <span key={line.id}>
+                    {line.text}
+                    {index < lines.length - 1 ? ' ' : ''}
+                  </span>
+                ))}
+              </motion.p>
+            ) : (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                className="text-muted-foreground text-center"
+              >
+                Waiting for translation...
+              </motion.div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   );
