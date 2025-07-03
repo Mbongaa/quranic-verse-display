@@ -118,7 +118,8 @@
     @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl relative;
     box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
     font-size: clamp(1.25rem, 2.5vw, 3.25rem);
-    height: 11em;
+    height: min(11em, 40vh);
+    max-height: 40vh;
   }
 
   .translation-container::before {
