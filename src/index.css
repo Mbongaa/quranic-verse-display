@@ -115,10 +115,23 @@
   }
   
   .translation-container {
-    @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl;
+    @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl relative;
     box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
     font-size: clamp(1.25rem, 2.5vw, 3.25rem);
     height: 10em;
+  }
+
+  .translation-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20%;
+    background: linear-gradient(to bottom, hsl(var(--background)), transparent);
+    pointer-events: none;
+    border-radius: inherit;
+    z-index: 1;
   }
   
   .translation-text {
