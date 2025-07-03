@@ -23,6 +23,7 @@ const KhutbahDisplay = () => {
     window.matchMedia('(prefers-color-scheme: dark)').matches
   );
   const [isDevMode, setIsDevMode] = useState(false);
+  const [activeLineId, setActiveLineId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const translationScrollRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
@@ -110,7 +111,22 @@ const KhutbahDisplay = () => {
           setLines(prev => {
             const updated = [...prev, newLine];
             // Keep only the last 15 lines for display (newest at bottom)
-            return updated.slice(-15);
+            const finalLines = updated.slice(-15);
+            
+            // Set this new line as active and schedule its deactivation
+            setActiveLineId(newLine.id);
+            const chunks = splitIntoChunks(newLine.text);
+            const totalAnimationTime = chunks.reduce((acc, chunk, index) => {
+              const chunkWords = chunk.split(' ').length;
+              const delay = chunks.slice(0, index).reduce((delayAcc, prevChunk) => {
+                return delayAcc + calculateReadingDelay(prevChunk.split(' ').length);
+              }, 0);
+              return Math.max(acc, delay + calculateReadingDelay(chunkWords) + 300); // +300ms for animation duration
+            }, 0);
+            
+            setTimeout(() => setActiveLineId(null), totalAnimationTime);
+            
+            return finalLines;
           });
         }
       } catch (error) {
@@ -186,7 +202,22 @@ const KhutbahDisplay = () => {
         
         setLines(prev => {
           const updated = [...prev, newLine];
-          return updated.slice(-15);
+          const finalLines = updated.slice(-15);
+          
+          // Set this new line as active for dev mode too
+          setActiveLineId(newLine.id);
+          const chunks = splitIntoChunks(newLine.text);
+          const totalAnimationTime = chunks.reduce((acc, chunk, index) => {
+            const chunkWords = chunk.split(' ').length;
+            const delay = chunks.slice(0, index).reduce((delayAcc, prevChunk) => {
+              return delayAcc + calculateReadingDelay(prevChunk.split(' ').length);
+            }, 0);
+            return Math.max(acc, delay + calculateReadingDelay(chunkWords) + 300);
+          }, 0);
+          
+          setTimeout(() => setActiveLineId(null), totalAnimationTime);
+          
+          return finalLines;
         });
         
         lineIndex++;
@@ -217,6 +248,14 @@ const KhutbahDisplay = () => {
       translationScrollRef.current.scrollTop = translationScrollRef.current.scrollHeight;
     }
   }, [lines]);
+
+  // Horizontal auto-scroll for Arabic ticker
+  useEffect(() => {
+    if (textContentRef.current && textContainerRef.current) {
+      // Scroll the horizontal container to the far right (for RTL)
+      textContainerRef.current.scrollLeft = textContentRef.current.scrollWidth;
+    }
+  }, [words]);
 
   // Apply dark mode class on mount based on initial state
   useEffect(() => {
@@ -331,24 +370,35 @@ const KhutbahDisplay = () => {
               <div className="space-y-2">
                 {lines.map((line, lineIndex) => {
                   const chunks = splitIntoChunks(line.text);
+                  const isActive = activeLineId === line.id;
                   return (
-                    <div key={line.id} className="flex flex-wrap gap-1">
+                    <div 
+                      key={line.id} 
+                      className={`flex flex-wrap gap-1 ${isActive ? 'translation-line-active' : ''}`}
+                    >
                       <AnimatePresence>
-                        {chunks.map((chunk, chunkIndex) => (
-                          <motion.span
-                            key={`${line.id}-chunk-${chunkIndex}`}
-                            initial={{ opacity: 0, y: 5 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{
-                              duration: 0.3,
-                              ease: "easeOut",
-                              delay: chunkIndex * 0.15 // 150ms stagger between chunks
-                            }}
-                            className="text-foreground"
-                          >
-                            {chunk}
-                          </motion.span>
-                        ))}
+                        {chunks.map((chunk, chunkIndex) => {
+                          // Calculate cumulative delay based on previous chunks' reading time
+                          const delay = chunks.slice(0, chunkIndex).reduce((acc, prevChunk) => {
+                            return acc + calculateReadingDelay(prevChunk.split(' ').length);
+                          }, 0) / 1000; // Convert to seconds for Framer Motion
+                          
+                          return (
+                            <motion.span
+                              key={`${line.id}-chunk-${chunkIndex}`}
+                              initial={{ opacity: 0, y: 5 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              transition={{
+                                duration: 0.3,
+                                ease: "easeOut",
+                                delay: delay
+                              }}
+                              className="text-foreground"
+                            >
+                              {chunk}
+                            </motion.span>
+                          );
+                        })}
                       </AnimatePresence>
                     </div>
                   );
