@@ -276,7 +276,7 @@ const KhutbahDisplay = () => {
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
             >
-              <div className="translation-box w-[calc(100vw-3rem)] mx-auto h-[4em] p-3 sm:p-4 md:p-6">
+              <div className="translation-box w-full max-w-7xl mx-auto h-[4em] sm:h-24 p-3 sm:p-4 md:p-6">
                 <div ref={textContainerRef} className="h-full overflow-hidden flex items-center justify-center">
                   <div className="w-full text-right" dir="rtl">
                     <div ref={textContentRef} className="inline-flex gap-2 justify-end whitespace-nowrap">
@@ -325,7 +325,7 @@ const KhutbahDisplay = () => {
           ref={translationScrollRef}
           className="translation-box w-[calc(100vw-3rem)] mx-auto h-[10em] overflow-y-auto scrollbar-hide flex flex-col justify-end p-4"
         >
-          <div className="text-left translation-text">
+          <div className="text-left text-lg md:text-xl leading-relaxed">
             {lines.length > 0 ? (
               <motion.p
                 initial={{ opacity: 0 }}
