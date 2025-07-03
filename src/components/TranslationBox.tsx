@@ -272,23 +272,26 @@ const KhutbahDisplay = () => {
           <div className="translation-box w-full max-w-7xl mx-auto h-[calc(100vh-280px)]">
             <div 
               ref={translationScrollRef}
-              className="h-full max-h-[60vh] p-4 overflow-y-auto scrollbar-hide"
+              className="h-full max-h-[60vh] p-4 overflow-y-auto scrollbar-hide flex flex-col justify-end"
               style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
               <div className="text-left text-lg md:text-xl leading-relaxed">
                 {lines.length > 0 ? (
-                  <motion.p
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    className="text-foreground"
-                  >
-                    {lines.map((line, index) => (
-                      <span key={line.id}>
-                        {line.text}
-                        {index < lines.length - 1 ? ' ' : ''}
-                      </span>
-                    ))}
-                  </motion.p>
+                  <div className="flex flex-col">
+                    <AnimatePresence>
+                      {lines.map((line) => (
+                        <motion.span
+                          key={line.id}
+                          initial={{ opacity: 0, y: 10 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{ duration: 0.3, ease: "easeOut" }}
+                          className="text-foreground mb-1"
+                        >
+                          {line.text}
+                        </motion.span>
+                      ))}
+                    </AnimatePresence>
+                  </div>
                 ) : (
                   <motion.div
                     initial={{ opacity: 0 }}
