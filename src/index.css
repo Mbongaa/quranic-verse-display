@@ -111,14 +111,14 @@
     @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl;
     box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
     font-size: clamp(1.25rem, 2.5vw, 3.25rem);
-    min-height: 4em;
+    min-height: 2em;
   }
   
   .translation-container {
     @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl;
     box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
     font-size: clamp(1.25rem, 2.5vw, 3.25rem);
-    height: 8em;
+    height: 7em;
   }
   
   .translation-text {
