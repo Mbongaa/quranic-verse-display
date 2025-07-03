@@ -325,7 +325,7 @@ const KhutbahDisplay = () => {
           ref={translationScrollRef}
           className="translation-box w-[calc(100vw-3rem)] mx-auto h-[250px] overflow-y-auto scrollbar-hide flex flex-col justify-end p-4"
         >
-          <div className="text-left text-lg md:text-xl leading-relaxed">
+          <div className="text-left translation-text">
             {lines.length > 0 ? (
               <motion.p
                 initial={{ opacity: 0 }}
