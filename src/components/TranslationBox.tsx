@@ -23,6 +23,7 @@ const KhutbahDisplay = () => {
   );
   const [isDevMode, setIsDevMode] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
+  const translationScrollRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
   const textContentRef = useRef<HTMLDivElement>(null);
 
@@ -106,9 +107,9 @@ const KhutbahDisplay = () => {
           };
           
           setLines(prev => {
-            const updated = [newLine, ...prev];
-            // Keep only the first 15 lines for display (newest at top)
-            return updated.slice(0, 15);
+            const updated = [...prev, newLine];
+            // Keep only the last 15 lines for display (newest at bottom)
+            return updated.slice(-15);
           });
         }
       } catch (error) {
@@ -183,8 +184,8 @@ const KhutbahDisplay = () => {
         };
         
         setLines(prev => {
-          const updated = [newLine, ...prev];
-          return updated.slice(0, 15);
+          const updated = [...prev, newLine];
+          return updated.slice(-15);
         });
         
         lineIndex++;
@@ -209,10 +210,10 @@ const KhutbahDisplay = () => {
     };
   }, [isDevMode]);
 
-  // Keep scroll at top since newest translations appear at top
+  // Auto-scroll to bottom when new translations are added
   useEffect(() => {
-    if (scrollRef.current) {
-      scrollRef.current.scrollTop = 0;
+    if (translationScrollRef.current) {
+      translationScrollRef.current.scrollTop = translationScrollRef.current.scrollHeight;
     }
   }, [lines]);
 
@@ -266,51 +267,38 @@ const KhutbahDisplay = () => {
 
       {/* Container for both boxes with consistent spacing */}
       <div className="mt-16 flex-1 mb-6 flex flex-col">
-        {/* Translation Box - fixed height to prevent pushing down Arabic box */}
+        {/* Translation Box - scrollable paragraph accumulation */}
         <div className="mb-8">
-          <div className="translation-box w-full max-w-7xl mx-auto h-[calc(100vh-280px)] p-3 sm:p-4 md:p-6">
+          <div className="translation-box w-full max-w-7xl mx-auto h-[calc(100vh-280px)]">
             <div 
-              ref={scrollRef}
-              className="h-full overflow-hidden flex flex-col justify-start items-center pt-[10%]"
+              ref={translationScrollRef}
+              className="h-full max-h-[60vh] p-4 overflow-y-auto scrollbar-hide"
+              style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
             >
-              <AnimatePresence mode="popLayout">
-                {lines.map((line, index) => {
-                  // Make the first line much larger and more prominent
-                  const sizeScale = index === 0 ? 1.6 : Math.max(0.5, 1 - (index * 0.12));
-                  const spacing = index === 0 ? "mb-8" : "mb-2";
-                  
-                  return (
-                    <motion.div
-                      key={line.id}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: Math.max(0.15, 1 - (index * 0.1)), y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ 
-                        duration: 0.5, 
-                        ease: "easeOut",
-                        delay: 0.05 * index
-                      }}
-                      className={`translation-text text-center ${spacing}`}
-                      style={{
-                        opacity: Math.max(0.15, 1 - (index * 0.1)),
-                        fontSize: `clamp(${1.125 * sizeScale}rem, ${3.5 * sizeScale}vw, ${4.5 * sizeScale}rem)`
-                      }}
-                    >
-                      {line.text}
-                    </motion.div>
-                  );
-                })}
-              </AnimatePresence>
-              
-              {lines.length === 0 && (
-                <motion.div
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  className="translation-text text-muted-foreground text-center"
-                >
-                  Waiting for translation...
-                </motion.div>
-              )}
+              <div className="text-left text-lg md:text-xl leading-relaxed">
+                {lines.length > 0 ? (
+                  <motion.p
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-foreground"
+                  >
+                    {lines.map((line, index) => (
+                      <span key={line.id}>
+                        {line.text}
+                        {index < lines.length - 1 ? ' ' : ''}
+                      </span>
+                    ))}
+                  </motion.p>
+                ) : (
+                  <motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="text-muted-foreground text-center"
+                  >
+                    Waiting for translation...
+                  </motion.div>
+                )}
+              </div>
             </div>
           </div>
         </div>
