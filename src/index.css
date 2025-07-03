@@ -109,7 +109,7 @@
   
   .translation-text {
     @apply text-foreground leading-relaxed font-noto;
-    font-size: clamp(0.875rem, 2.5vw, 3rem);
+    font-size: clamp(1.125rem, 2.5vw, 3rem);
     word-wrap: break-word;
     hyphens: auto;
   }
