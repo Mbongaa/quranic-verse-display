@@ -24,6 +24,7 @@ const KhutbahDisplay = () => {
   );
   const [isDevMode, setIsDevMode] = useState(false);
   const [activeLineId, setActiveLineId] = useState<string | null>(null);
+  const [isTickerResetting, setIsTickerResetting] = useState(false);
   const scrollRef = useRef<HTMLDivElement>(null);
   const translationScrollRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
@@ -95,7 +96,12 @@ const KhutbahDisplay = () => {
             // Check on next frame if text overflows after adding this word
             setTimeout(() => {
               if (checkTextOverflow()) {
-                setWords([newWord]);
+                // Start fade-out animation
+                setIsTickerResetting(true);
+                setTimeout(() => {
+                  setWords([newWord]); // Reset with only the new word
+                  setIsTickerResetting(false); // Fade back in
+                }, 150); // Animation duration
               }
             }, 0);
             return updated;
@@ -178,7 +184,12 @@ const KhutbahDisplay = () => {
           // Check on next frame if text overflows after adding this word
           setTimeout(() => {
             if (checkTextOverflow()) {
-              setWords([newWord]);
+              // Start fade-out animation
+              setIsTickerResetting(true);
+              setTimeout(() => {
+                setWords([newWord]); // Reset with only the new word
+                setIsTickerResetting(false); // Fade back in
+              }, 150); // Animation duration
             }
           }, 0);
           return updated;
@@ -319,7 +330,12 @@ const KhutbahDisplay = () => {
               <div className="transcription-container w-[calc(100vw-3rem)] mx-auto p-3 sm:p-4 md:p-6">
                 <div ref={textContainerRef} className="h-full overflow-hidden flex items-center justify-center">
                   <div className="w-full text-right" dir="rtl">
-                    <div ref={textContentRef} className="inline-flex gap-2 justify-end whitespace-nowrap">
+                    <motion.div 
+                      ref={textContentRef} 
+                      className="inline-flex gap-2 justify-end whitespace-nowrap"
+                      animate={{ opacity: isTickerResetting ? 0 : 1 }}
+                      transition={{ duration: 0.15, ease: 'easeInOut' }}
+                    >
                       <AnimatePresence>
                         {words.map((word, index) => (
                           <motion.span
@@ -337,7 +353,7 @@ const KhutbahDisplay = () => {
                           </motion.span>
                         ))}
                       </AnimatePresence>
-                    </div>
+                    </motion.div>
                     
                     {words.length === 0 && (
                       <motion.div
