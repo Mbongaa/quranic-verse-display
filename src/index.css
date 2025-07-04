@@ -108,8 +108,7 @@
   }
   
   .transcription-container {
-    @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl;
-    box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
+    @apply rounded-2xl;
     font-size: clamp(1.0rem, 2.0vw, 2.75rem);
     min-height: 1.7em;
   }
