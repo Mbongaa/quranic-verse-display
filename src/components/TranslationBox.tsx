@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun, Eye, EyeClosed, ListCollapse, Maximize, Camera, CameraOff } from 'lucide-react';
+import { Moon, Sun, Eye, EyeClosed, ListCollapse, Maximize, Camera, CameraOff, Circle } from 'lucide-react';
 import { splitIntoChunks, calculateReadingDelay } from '@/utils/textAnimator';
 
 interface Word {
@@ -352,7 +352,7 @@ const KhutbahDisplay = () => {
           className="fixed top-4 right-4 p-2 rounded-full bg-card/10 border border-border/20 hover:bg-card/20 transition-all opacity-60 hover:opacity-100 z-20"
           aria-label="Exit fullscreen mode"
         >
-          <Maximize className="w-4 h-4 text-muted-foreground" />
+          <Circle className="w-4 h-4 text-muted-foreground" />
         </button>
       )}
 
