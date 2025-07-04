@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun, Eye, EyeClosed, ListCollapse } from 'lucide-react';
+import { Moon, Sun, Eye, EyeClosed, ListCollapse, Maximize, Camera, CameraOff } from 'lucide-react';
 import { splitIntoChunks, calculateReadingDelay } from '@/utils/textAnimator';
 
 interface Word {
@@ -25,6 +25,8 @@ const KhutbahDisplay = () => {
   const [isDevMode, setIsDevMode] = useState(false);
   const [activeLineId, setActiveLineId] = useState<string | null>(null);
   const [isTickerResetting, setIsTickerResetting] = useState(false);
+  const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showCamera, setShowCamera] = useState(true);
   const scrollRef = useRef<HTMLDivElement>(null);
   const translationScrollRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
@@ -279,45 +281,83 @@ const KhutbahDisplay = () => {
 
   return (
     <div className="min-h-screen bg-background p-6 flex flex-col">
-      {/* Dark mode toggle */}
-      <button
-        onClick={toggleDarkMode}
-        className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
-        aria-label="Toggle dark mode"
-      >
-        {isDark ? (
-          <Sun className="w-5 h-5 text-foreground" />
-        ) : (
-          <Moon className="w-5 h-5 text-foreground" />
-        )}
-      </button>
+      {/* Header with controls - hidden in fullscreen mode */}
+      {!isFullscreen && (
+        <>
+          {/* Dark mode toggle */}
+          <button
+            onClick={toggleDarkMode}
+            className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
+            aria-label="Toggle dark mode"
+          >
+            {isDark ? (
+              <Sun className="w-5 h-5 text-foreground" />
+            ) : (
+              <Moon className="w-5 h-5 text-foreground" />
+            )}
+          </button>
 
-      {/* Transcription toggle */}
-      <button
-        onClick={() => setShowTranscription(!showTranscription)}
-        className="fixed top-6 right-20 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
-        aria-label="Toggle transcription visibility"
-      >
-        {showTranscription ? (
-          <Eye className="w-5 h-5 text-foreground" />
-        ) : (
-          <EyeClosed className="w-5 h-5 text-foreground" />
-        )}
-      </button>
+          {/* Transcription toggle */}
+          <button
+            onClick={() => setShowTranscription(!showTranscription)}
+            className="fixed top-6 right-20 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
+            aria-label="Toggle transcription visibility"
+          >
+            {showTranscription ? (
+              <Eye className="w-5 h-5 text-foreground" />
+            ) : (
+              <EyeClosed className="w-5 h-5 text-foreground" />
+            )}
+          </button>
 
-      {/* Dev mode toggle */}
-      <button
-        onClick={() => setIsDevMode(!isDevMode)}
-        className={`fixed top-6 right-36 p-3 rounded-full border border-border/30 hover:bg-card/30 transition-colors z-10 ${
-          isDevMode ? 'bg-primary/20 text-primary' : 'bg-card/20 text-foreground'
-        }`}
-        aria-label="Toggle dev mode"
-      >
-        <ListCollapse className="w-5 h-5" />
-      </button>
+          {/* Camera toggle */}
+          <button
+            onClick={() => setShowCamera(!showCamera)}
+            className="fixed top-6 right-36 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
+            aria-label="Toggle camera visibility"
+          >
+            {showCamera ? (
+              <Camera className="w-5 h-5 text-foreground" />
+            ) : (
+              <CameraOff className="w-5 h-5 text-foreground" />
+            )}
+          </button>
+
+          {/* Dev mode toggle */}
+          <button
+            onClick={() => setIsDevMode(!isDevMode)}
+            className={`fixed top-6 right-52 p-3 rounded-full border border-border/30 hover:bg-card/30 transition-colors z-10 ${
+              isDevMode ? 'bg-primary/20 text-primary' : 'bg-card/20 text-foreground'
+            }`}
+            aria-label="Toggle dev mode"
+          >
+            <ListCollapse className="w-5 h-5" />
+          </button>
+
+          {/* Fullscreen toggle */}
+          <button
+            onClick={() => setIsFullscreen(!isFullscreen)}
+            className="fixed top-6 right-[17rem] p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-10"
+            aria-label="Toggle fullscreen mode"
+          >
+            <Maximize className="w-5 h-5 text-foreground" />
+          </button>
+        </>
+      )}
+
+      {/* Floating fullscreen exit button - only visible in fullscreen mode */}
+      {isFullscreen && (
+        <button
+          onClick={() => setIsFullscreen(false)}
+          className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-20"
+          aria-label="Exit fullscreen mode"
+        >
+          <Maximize className="w-5 h-5 text-foreground" />
+        </button>
+      )}
 
       {/* Container for three vertical sections */}
-      <div className="mt-16 flex-1 mb-6 flex flex-col gap-4 p-4">
+      <div className={`${isFullscreen ? 'mt-0' : 'mt-16'} flex-1 mb-6 flex flex-col gap-4 p-4`}>
         {/* 1. Arabic Transcription Box - Top */}
         <AnimatePresence>
           {showTranscription && (
@@ -371,10 +411,12 @@ const KhutbahDisplay = () => {
           )}
         </AnimatePresence>
 
-        {/* 2. Camera Feed Placeholder - Middle */}
-        <div className="w-full max-w-7xl mx-auto h-[30vh] bg-black rounded-xl shadow-inner flex items-center justify-center">
-          <span className="text-gray-400 text-lg">Visuals / Camera Feed Area</span>
-        </div>
+        {/* 2. Camera Feed Placeholder - Middle - conditional rendering */}
+        {showCamera && (
+          <div className="w-full max-w-7xl mx-auto h-[30vh] bg-black rounded-xl shadow-inner flex items-center justify-center">
+            <span className="text-gray-400 text-lg">Visuals / Camera Feed Area</span>
+          </div>
+        )}
 
         {/* 3. Dutch Translation Box - Bottom */}
         <div 
