@@ -139,6 +139,9 @@
     @apply text-foreground leading-relaxed font-noto;
     word-wrap: break-word;
     hyphens: auto;
+    max-width: 65ch;
+    margin-left: auto;
+    margin-right: auto;
   }
   
   .scrollbar-hide {
