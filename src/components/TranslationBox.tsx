@@ -349,10 +349,10 @@ const KhutbahDisplay = () => {
       {isFullscreen && (
         <button
           onClick={() => setIsFullscreen(false)}
-          className="fixed top-6 right-6 p-3 rounded-full bg-card/20 border border-border/30 hover:bg-card/30 transition-colors z-20"
+          className="fixed top-4 right-4 p-2 rounded-full bg-card/10 border border-border/20 hover:bg-card/20 transition-all opacity-60 hover:opacity-100 z-20"
           aria-label="Exit fullscreen mode"
         >
-          <Maximize className="w-5 h-5 text-foreground" />
+          <Maximize className="w-4 h-4 text-muted-foreground" />
         </button>
       )}
 
