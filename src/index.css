@@ -129,7 +129,7 @@
     left: 0;
     right: 0;
     height: 70%;
-    background: transparent;
+    background: linear-gradient(to bottom, hsl(var(--background)), transparent);
     pointer-events: none;
     border-radius: inherit;
     z-index: 1;
