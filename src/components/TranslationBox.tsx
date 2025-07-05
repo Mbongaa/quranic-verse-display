@@ -70,10 +70,10 @@ const KhutbahDisplay = () => {
 
   // WebSocket connection for real-time transcription and translation
   useEffect(() => {
-    // Use configurable WebSocket URL - defaults to localhost:8000 for development
+    // Use configurable WebSocket URL - defaults to localhost:8765 for development
     const wsUrl = process.env.NODE_ENV === 'development' 
-      ? 'ws://localhost:8000/ws'
-      : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
+      ? 'ws://localhost:8765'
+      : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}`;
     
     const ws = new WebSocket(wsUrl);
     setConnectionStatus('connecting');
