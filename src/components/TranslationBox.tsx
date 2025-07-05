@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Moon, Sun, Eye, EyeClosed, ListCollapse, Maximize, Camera, CameraOff, Circle } from 'lucide-react';
+import { Moon, Sun, Eye, EyeClosed, ListCollapse, Maximize, Camera, CameraOff, Circle, Wifi, WifiOff } from 'lucide-react';
 import { splitIntoChunks, calculateReadingDelay } from '@/utils/textAnimator';
 
 interface Word {
@@ -27,6 +27,7 @@ const KhutbahDisplay = () => {
   const [isTickerResetting, setIsTickerResetting] = useState(false);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showCamera, setShowCamera] = useState(true);
+  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('disconnected');
   const scrollRef = useRef<HTMLDivElement>(null);
   const translationScrollRef = useRef<HTMLDivElement>(null);
   const textContainerRef = useRef<HTMLDivElement>(null);
@@ -75,9 +76,11 @@ const KhutbahDisplay = () => {
       : `${window.location.protocol === 'https:' ? 'wss:' : 'ws:'}//${window.location.host}/ws`;
     
     const ws = new WebSocket(wsUrl);
+    setConnectionStatus('connecting');
     
     ws.onopen = () => {
       console.log('Connected to WebSocket server at:', wsUrl);
+      setConnectionStatus('connected');
     };
     
     ws.onmessage = (event) => {
@@ -144,6 +147,7 @@ const KhutbahDisplay = () => {
     
     ws.onclose = (event) => {
       console.log('WebSocket connection closed:', event.code, event.reason);
+      setConnectionStatus('disconnected');
       // Auto-reconnect after 3 seconds if connection is lost
       if (event.code !== 1000) {
         setTimeout(() => {
@@ -155,6 +159,7 @@ const KhutbahDisplay = () => {
     
     ws.onerror = (error) => {
       console.error('WebSocket error:', error);
+      setConnectionStatus('disconnected');
     };
     
     // Cleanup on component unmount
@@ -333,6 +338,19 @@ const KhutbahDisplay = () => {
           >
             <ListCollapse className="w-5 h-5" />
           </button>
+
+          {/* Connection status indicator */}
+          <div className="fixed top-6 left-6 p-2 z-10">
+            <div className="flex items-center gap-2 text-xs text-muted-foreground">
+              {connectionStatus === 'connected' ? (
+                <Wifi className="w-3 h-3 text-primary/60" />
+              ) : connectionStatus === 'connecting' ? (
+                <Wifi className="w-3 h-3 text-muted-foreground/50 animate-pulse" />
+              ) : (
+                <WifiOff className="w-3 h-3 text-muted-foreground/40" />
+              )}
+            </div>
+          </div>
 
           {/* Fullscreen toggle */}
           <button
