@@ -428,15 +428,10 @@ const KhutbahDisplay = () => {
                   {lines.map((line, lineIndex) => {
                     const chunks = splitIntoChunks(line.text);
                     const isActive = activeLineId === line.id;
-                    // Calculate fade intensity based on position from bottom
-                    const positionFromBottom = lines.length - lineIndex - 1;
-                    const fadeIntensity = Math.max(20, 100 - (positionFromBottom * 20));
-                    const fadeClass = `text-fade-${Math.min(100, fadeIntensity)}`;
-                    
                     return (
                         <div 
                           key={line.id} 
-                          className={`flex flex-wrap gap-3 ${isActive ? 'translation-line-active' : ''} ${fadeClass} transition-all duration-500`}
+                          className={`flex flex-wrap gap-3 ${isActive ? 'translation-line-active' : ''}`}
                         >
                         <AnimatePresence>
                           {chunks.map((chunk, chunkIndex) => {
@@ -455,7 +450,7 @@ const KhutbahDisplay = () => {
                                   ease: "easeOut",
                                   delay: delay
                                 }}
-                                className="inherit"
+                                className="text-foreground"
                               >
                                 {chunk}
                               </motion.span>
