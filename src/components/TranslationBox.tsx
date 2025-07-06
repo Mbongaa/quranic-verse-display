@@ -260,12 +260,6 @@ const KhutbahDisplay = () => {
     };
   }, [isDevMode]);
 
-  // Auto-scroll to bottom when new translations are added
-  useEffect(() => {
-    if (translationScrollRef.current) {
-      translationScrollRef.current.scrollTop = translationScrollRef.current.scrollHeight;
-    }
-  }, [lines]);
 
   // Horizontal auto-scroll for Arabic ticker
   useEffect(() => {
