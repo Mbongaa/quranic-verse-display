@@ -444,7 +444,7 @@ const KhutbahDisplay = () => {
           {/* Translation Box - Right side on large screens, full width when camera is hidden */}
           <div 
             ref={translationScrollRef}
-            className={`translation-container overflow-y-auto scrollbar-hide flex flex-col justify-end p-4 ${
+            className={`translation-container p-4 flex-1 flex flex-col overflow-y-auto scrollbar-hide ${
               showCamera ? 'w-full lg:w-3/5' : 'w-full'
             }`}
           >
