@@ -1,0 +1,170 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Islamic-inspired design system with soft, spiritual colors */
+
+@layer base {
+  :root {
+    /* Islamic pink soft background with dark teal green text */
+    --background: 330 45% 96%;
+    --foreground: 180 65% 15%;
+
+    --card: 330 35% 94%;
+    --card-foreground: 180 65% 15%;
+
+    --popover: 330 35% 94%;
+    --popover-foreground: 180 65% 15%;
+
+    /* Dark teal green primary */
+    --primary: 180 65% 20%;
+    --primary-foreground: 330 45% 96%;
+
+    /* Soft rose gold accents */
+    --secondary: 340 30% 85%;
+    --secondary-foreground: 180 65% 15%;
+
+    --muted: 330 25% 90%;
+    --muted-foreground: 180 40% 35%;
+
+    /* Warm rose accent */
+    --accent: 340 40% 80%;
+    --accent-foreground: 180 65% 15%;
+
+    --destructive: 0 84.2% 60.2%;
+    --destructive-foreground: 330 45% 96%;
+
+    --border: 330 25% 85%;
+    --input: 330 25% 85%;
+    --ring: 180 65% 25%;
+
+    --radius: 0.5rem;
+
+    --sidebar-background: 330 45% 96%;
+    --sidebar-foreground: 180 65% 15%;
+    --sidebar-primary: 180 65% 20%;
+    --sidebar-primary-foreground: 330 45% 96%;
+    --sidebar-accent: 330 35% 90%;
+    --sidebar-accent-foreground: 180 65% 15%;
+    --sidebar-border: 330 25% 85%;
+    --sidebar-ring: 180 65% 25%;
+  }
+
+  .dark {
+    /* Enhanced dark mode with deeper islamic colors */
+    --background: 210 40% 3%;
+    --foreground: 180 25% 95%;
+
+    --card: 210 35% 6%;
+    --card-foreground: 180 25% 95%;
+
+    --popover: 210 35% 6%;
+    --popover-foreground: 180 25% 95%;
+
+    --primary: 180 45% 35%;
+    --primary-foreground: 180 25% 95%;
+
+    --secondary: 45 70% 65%;
+    --secondary-foreground: 210 40% 3%;
+
+    --muted: 210 35% 10%;
+    --muted-foreground: 210 20% 70%;
+
+    --accent: 40 75% 60%;
+    --accent-foreground: 210 40% 3%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 210 25% 15%;
+    --input: 210 25% 15%;
+    --ring: 180 45% 55%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground font-medium;
+    background-attachment: fixed;
+  }
+}
+
+@layer utilities {
+  .translation-box {
+    @apply bg-card/10 backdrop-blur-sm border border-border/30 rounded-2xl;
+    box-shadow: 0 8px 32px 0 hsl(var(--primary) / 0.1);
+  }
+  
+  .transcription-container {
+    @apply rounded-2xl;
+    font-size: clamp(1.0rem, 2.0vw, 2.75rem);
+    min-height: 1.7em;
+  }
+  
+  .translation-container {
+    @apply border-0 rounded-2xl relative;
+    font-size: clamp(1.25rem, 2.5vw, 3.25rem);
+    scroll-behavior: smooth;
+  }
+
+.text-fade-out-at-top {
+  /* This gradient uses 'em' units to create a mask relative to font size. */
+  mask-image: linear-gradient(
+    to top,
+    /* 1. The Safe Zone (bottom part is solid black/visible). */
+    /*    Starts solid at the bottom (0) and stays solid for 3em (approx. 2 lines). */
+    black 0,
+    black 3em,
+
+    /* 2. The Fade Zone. */
+    /*    Fades from solid black to transparent between 3em and 4.5em from the bottom. */
+    /*    This creates a fade that is about one line (1.5em) tall. */
+    transparent 100%
+  );
+
+  /* Add the vendor prefix for compatibility */
+  -webkit-mask-image: linear-gradient(
+    to top,
+    black 0,
+    black 3em,
+    transparent 100%
+  );
+}
+
+.translation-text {
+  @apply text-foreground leading-relaxed font-noto;
+  word-wrap: break-word;
+  hyphens: auto;
+  max-width: 65ch;
+  margin-left: auto;
+  margin-right: auto;
+}
+  
+  .scrollbar-hide {
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .translation-line-active {
+    @apply bg-primary/5 rounded-lg px-2 py-1 transition-all duration-500 ease-out;
+    box-shadow: 0 0 20px hsl(var(--primary) / 0.0);
+  }
+}
