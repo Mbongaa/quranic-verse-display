@@ -285,7 +285,7 @@ const KhutbahDisplay = () => {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background p-6 flex flex-col">
+    <div className="h-screen bg-background p-6 flex flex-col overflow-hidden">
       {/* Header with controls - hidden in fullscreen mode */}
       {!isFullscreen && (
         <>
@@ -455,10 +455,10 @@ const KhutbahDisplay = () => {
                     const chunks = splitIntoChunks(line.text);
                     const isActive = activeLineId === line.id;
                     return (
-                      <div 
-                        key={line.id} 
-                        className={`flex flex-wrap gap-1 ${isActive ? 'translation-line-active' : ''}`}
-                      >
+                        <div 
+                          key={line.id} 
+                          className={`flex flex-wrap gap-3 ${isActive ? 'translation-line-active' : ''}`}
+                        >
                         <AnimatePresence>
                           {chunks.map((chunk, chunkIndex) => {
                             // Calculate cumulative delay based on previous chunks' reading time
