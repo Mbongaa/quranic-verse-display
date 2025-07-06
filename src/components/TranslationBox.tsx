@@ -374,9 +374,10 @@ const KhutbahDisplay = () => {
         </button>
       )}
 
-      {/* Container for three vertical sections */}
+      {/* Responsive Container - Vertical on small screens, Horizontal on large screens */}
       <div className={`${isFullscreen ? 'mt-0' : 'mt-16'} flex-1 mb-6 flex flex-col gap-4 p-4`}>
-        {/* 1. Arabic Transcription Box - Top */}
+        
+        {/* Arabic Transcription Box - Always at top on large screens */}
         <AnimatePresence>
           {showTranscription && (
             <motion.div 
@@ -384,6 +385,7 @@ const KhutbahDisplay = () => {
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.3, ease: "easeOut" }}
+              className="lg:h-[15vh]"
             >
               <div className="transcription-container w-[calc(100vw-3rem)] mx-auto p-3 sm:p-4 md:p-6">
                 <div ref={textContainerRef} className="h-full overflow-hidden flex items-center justify-center">
@@ -429,66 +431,72 @@ const KhutbahDisplay = () => {
           )}
         </AnimatePresence>
 
-        {/* 2. Camera Feed Placeholder - Middle - conditional rendering */}
-        {showCamera && (
-          <div className="w-full max-w-7xl mx-auto h-[30vh] bg-black rounded-xl shadow-inner flex items-center justify-center">
-            <span className="text-gray-400 text-lg">Visuals / Camera Feed Area</span>
-          </div>
-        )}
+        {/* Bottom Section - Vertical stack on small screens, Horizontal on large screens */}
+        <div className="flex-1 flex flex-col lg:flex-row gap-4">
+          
+          {/* Camera Feed - Left side on large screens */}
+          {showCamera && (
+            <div className="w-full lg:w-2/5 h-[30vh] lg:h-full bg-black rounded-xl shadow-inner flex items-center justify-center">
+              <span className="text-gray-400 text-lg">Visuals / Camera Feed Area</span>
+            </div>
+          )}
 
-        {/* 3. Dutch Translation Box - Bottom */}
-        <div 
-          ref={translationScrollRef}
-          className="translation-container w-[calc(100vw-3rem)] mx-auto overflow-y-auto scrollbar-hide flex flex-col justify-end p-4"
-        >
-          <div className="text-left translation-text">
-            {lines.length > 0 ? (
-              <div className="space-y-2">
-                {lines.map((line, lineIndex) => {
-                  const chunks = splitIntoChunks(line.text);
-                  const isActive = activeLineId === line.id;
-                  return (
-                    <div 
-                      key={line.id} 
-                      className={`flex flex-wrap gap-1 ${isActive ? 'translation-line-active' : ''}`}
-                    >
-                      <AnimatePresence>
-                        {chunks.map((chunk, chunkIndex) => {
-                          // Calculate cumulative delay based on previous chunks' reading time
-                          const delay = chunks.slice(0, chunkIndex).reduce((acc, prevChunk) => {
-                            return acc + calculateReadingDelay(prevChunk.split(' ').length);
-                          }, 0) / 1000; // Convert to seconds for Framer Motion
-                          
-                          return (
-                            <motion.span
-                              key={`${line.id}-chunk-${chunkIndex}`}
-                              initial={{ opacity: 0, y: 5 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              transition={{
-                                duration: 0.3,
-                                ease: "easeOut",
-                                delay: delay
-                              }}
-                              className="text-foreground"
-                            >
-                              {chunk}
-                            </motion.span>
-                          );
-                        })}
-                      </AnimatePresence>
-                    </div>
-                  );
-                })}
-              </div>
-            ) : (
-              <motion.div
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                className="text-muted-foreground text-center"
-              >
-                Waiting for translation...
-              </motion.div>
-            )}
+          {/* Translation Box - Right side on large screens, full width when camera is hidden */}
+          <div 
+            ref={translationScrollRef}
+            className={`translation-container overflow-y-auto scrollbar-hide flex flex-col justify-end p-4 ${
+              showCamera ? 'w-full lg:w-3/5' : 'w-full'
+            }`}
+          >
+            <div className="text-left translation-text">
+              {lines.length > 0 ? (
+                <div className="space-y-2">
+                  {lines.map((line, lineIndex) => {
+                    const chunks = splitIntoChunks(line.text);
+                    const isActive = activeLineId === line.id;
+                    return (
+                      <div 
+                        key={line.id} 
+                        className={`flex flex-wrap gap-1 ${isActive ? 'translation-line-active' : ''}`}
+                      >
+                        <AnimatePresence>
+                          {chunks.map((chunk, chunkIndex) => {
+                            // Calculate cumulative delay based on previous chunks' reading time
+                            const delay = chunks.slice(0, chunkIndex).reduce((acc, prevChunk) => {
+                              return acc + calculateReadingDelay(prevChunk.split(' ').length);
+                            }, 0) / 1000; // Convert to seconds for Framer Motion
+                            
+                            return (
+                              <motion.span
+                                key={`${line.id}-chunk-${chunkIndex}`}
+                                initial={{ opacity: 0, y: 5 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                transition={{
+                                  duration: 0.3,
+                                  ease: "easeOut",
+                                  delay: delay
+                                }}
+                                className="text-foreground"
+                              >
+                                {chunk}
+                              </motion.span>
+                            );
+                          })}
+                        </AnimatePresence>
+                      </div>
+                    );
+                  })}
+                </div>
+              ) : (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  className="text-muted-foreground text-center"
+                >
+                  Waiting for translation...
+                </motion.div>
+              )}
+            </div>
           </div>
         </div>
       </div>
