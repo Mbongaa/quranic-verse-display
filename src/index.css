@@ -131,7 +131,7 @@
     /* 2. The Fade Zone. */
     /*    Fades from solid black to transparent between 3em and 4.5em from the bottom. */
     /*    This creates a fade that is about one line (1.5em) tall. */
-    transparent 4.5em
+    transparent 100%
   );
 
   /* Add the vendor prefix for compatibility */
@@ -139,7 +139,7 @@
     to top,
     black 0,
     black 3em,
-    transparent 4.5em
+    transparent 100%
   );
 }
 
