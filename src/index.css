@@ -120,18 +120,26 @@
   }
 
 .text-fade-out-at-top {
-  /* This creates a "safe zone" at the bottom and only fades near the top */
+  /* This gradient uses 'em' units to create a mask relative to font size. */
   mask-image: linear-gradient(
-    to top,          /* The direction is important here */
-    black 0%,         /* Starts solid black (visible) at the bottom */
-    black 30%,        /* Stays solid black up to the 70% mark */
-    transparent 100% /* Fades to transparent from 70% to the top (100%) */
+    to top,
+    /* 1. The Safe Zone (bottom part is solid black/visible). */
+    /*    Starts solid at the bottom (0) and stays solid for 3em (approx. 2 lines). */
+    black 0,
+    black 3em,
+
+    /* 2. The Fade Zone. */
+    /*    Fades from solid black to transparent between 3em and 4.5em from the bottom. */
+    /*    This creates a fade that is about one line (1.5em) tall. */
+    transparent 4.5em
   );
+
+  /* Add the vendor prefix for compatibility */
   -webkit-mask-image: linear-gradient(
     to top,
-    black 0%,
-    black 30%,
-    transparent 100%
+    black 0,
+    black 3em,
+    transparent 4.5em
   );
 }
 
