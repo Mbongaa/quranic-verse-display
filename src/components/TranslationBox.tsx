@@ -406,7 +406,7 @@ const KhutbahDisplay = () => {
         </AnimatePresence>
 
         {/* Bottom Section - Vertical stack on small screens, Horizontal on large screens */}
-        <div className="flex-1 flex flex-col lg:flex-row gap-4">
+        <div className={`${showTranscription ? 'h-[calc(100%-15vh-1rem)]' : 'h-full'} flex flex-col lg:flex-row gap-4`}>
           
           {/* Camera Feed - Left side on large screens */}
           {showCamera && (
@@ -418,7 +418,7 @@ const KhutbahDisplay = () => {
           {/* Translation Box - Right side on large screens, full width when camera is hidden */}
           <div 
             ref={translationScrollRef}
-            className={`translation-container p-4 flex-1 flex flex-col justify-end overflow-y-auto scrollbar-hide ${
+            className={`translation-container p-4 h-full flex flex-col justify-end overflow-y-auto scrollbar-hide ${
               showCamera ? 'w-full lg:w-3/5' : 'w-full'
             }`}
           >
