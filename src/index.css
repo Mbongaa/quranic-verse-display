@@ -119,17 +119,10 @@
     scroll-behavior: smooth;
   }
 
-  .translation-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 80%;
-    background: linear-gradient(to bottom, hsl(var(--background)), transparent);
-    pointer-events: none;
-    border-radius: inherit;
-    z-index: 1;
+  .text-fade-out-at-top {
+    /* Create the gradient mask that fades from transparent at top to opaque at bottom */
+    mask-image: linear-gradient(to bottom, transparent, black 80%);
+    -webkit-mask-image: linear-gradient(to bottom, transparent, black 80%);
   }
   
   .translation-text {
