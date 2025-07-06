@@ -349,7 +349,7 @@ const KhutbahDisplay = () => {
       )}
 
       {/* Responsive Container - Vertical on small screens, Horizontal on large screens */}
-      <div className={`${isFullscreen ? 'mt-0' : 'mt-16'} flex-1 mb-6 flex flex-col gap-4 p-4`}>
+      <div className={`${isFullscreen ? 'mt-0 h-screen' : 'mt-16 h-[calc(100vh-4rem)]'} flex flex-col gap-4 p-4`}>
         
         {/* Arabic Transcription Box - Always at top on large screens */}
         <AnimatePresence>
