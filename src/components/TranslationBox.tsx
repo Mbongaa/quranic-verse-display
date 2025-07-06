@@ -124,18 +124,8 @@ const KhutbahDisplay = () => {
             // Keep only the last 15 lines for display (newest at bottom)
             const finalLines = updated.slice(-15);
             
-            // Set this new line as active and schedule its deactivation
+            // Set this new line as active - will stay active until next line arrives
             setActiveLineId(newLine.id);
-            const chunks = splitIntoChunks(newLine.text);
-            const totalAnimationTime = chunks.reduce((acc, chunk, index) => {
-              const chunkWords = chunk.split(' ').length;
-              const delay = chunks.slice(0, index).reduce((delayAcc, prevChunk) => {
-                return delayAcc + calculateReadingDelay(prevChunk.split(' ').length);
-              }, 0);
-              return Math.max(acc, delay + calculateReadingDelay(chunkWords) + 300); // +300ms for animation duration
-            }, 0);
-            
-            setTimeout(() => setActiveLineId(null), totalAnimationTime);
             
             return finalLines;
           });
@@ -222,18 +212,8 @@ const KhutbahDisplay = () => {
           const updated = [...prev, newLine];
           const finalLines = updated.slice(-15);
           
-          // Set this new line as active for dev mode too
+          // Set this new line as active - will stay active until next line arrives
           setActiveLineId(newLine.id);
-          const chunks = splitIntoChunks(newLine.text);
-          const totalAnimationTime = chunks.reduce((acc, chunk, index) => {
-            const chunkWords = chunk.split(' ').length;
-            const delay = chunks.slice(0, index).reduce((delayAcc, prevChunk) => {
-              return delayAcc + calculateReadingDelay(prevChunk.split(' ').length);
-            }, 0);
-            return Math.max(acc, delay + calculateReadingDelay(chunkWords) + 300);
-          }, 0);
-          
-          setTimeout(() => setActiveLineId(null), totalAnimationTime);
           
           return finalLines;
         });
