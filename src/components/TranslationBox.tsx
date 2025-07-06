@@ -106,7 +106,7 @@ const KhutbahDisplay = () => {
                 setTimeout(() => {
                   setWords([newWord]); // Reset with only the new word
                   setIsTickerResetting(false); // Fade back in
-                }, 150); // Animation duration
+                }, 400); // Increased animation duration for smoother transition
               }
             }, 0);
             return updated;
@@ -179,16 +179,16 @@ const KhutbahDisplay = () => {
         setWords(prev => {
           const updated = [...prev, newWord];
           // Check on next frame if text overflows after adding this word
-          setTimeout(() => {
-            if (checkTextOverflow()) {
-              // Start fade-out animation
-              setIsTickerResetting(true);
-              setTimeout(() => {
-                setWords([newWord]); // Reset with only the new word
-                setIsTickerResetting(false); // Fade back in
-              }, 150); // Animation duration
-            }
-          }, 0);
+            setTimeout(() => {
+              if (checkTextOverflow()) {
+                // Start fade-out animation
+                setIsTickerResetting(true);
+                setTimeout(() => {
+                  setWords([newWord]); // Reset with only the new word
+                  setIsTickerResetting(false); // Fade back in
+                }, 400); // Increased animation duration for smoother transition
+              }
+            }, 0);
           return updated;
         });
         
@@ -367,8 +367,8 @@ const KhutbahDisplay = () => {
                     <motion.div 
                       ref={textContentRef} 
                       className="inline-flex gap-2 justify-end whitespace-nowrap"
-                      animate={{ opacity: isTickerResetting ? 0 : 1 }}
-                      transition={{ duration: 0.15, ease: 'easeInOut' }}
+                      animate={{ opacity: isTickerResetting ? 0 : 1, y: isTickerResetting ? -5 : 0 }}
+                      transition={{ duration: 0.4, ease: 'easeInOut' }}
                     >
                       <AnimatePresence>
                         {words.map((word, index) => (
