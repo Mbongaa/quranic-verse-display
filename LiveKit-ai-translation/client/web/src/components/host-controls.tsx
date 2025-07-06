@@ -2,8 +2,9 @@
 
 import MicToggle from "@/components/controls/mic-toggle";
 import LeaveButton from "@/components/controls/leave-button";
-import CaptionsToggle from "@/components/controls/captions-toggle";
-import LanguageSelect from "@/components/controls/language-select";
+// Remove these imports to hide CC button and language picker
+// import CaptionsToggle from "@/components/controls/captions-toggle";
+// import LanguageSelect from "@/components/controls/language-select";
 import DeviceSelector from "@/components/controls/device-selector";
 
 export default function HostControls() {
@@ -11,8 +12,9 @@ export default function HostControls() {
     <div className="flex items-center justify-center gap-4">
       <DeviceSelector />
       <MicToggle />
-      <CaptionsToggle />
-      <LanguageSelect />
+      {/* Hide CC button and language picker for iframe display */}
+      {/* <CaptionsToggle /> */}
+      {/* <LanguageSelect /> */}
       <LeaveButton />
     </div>
   );

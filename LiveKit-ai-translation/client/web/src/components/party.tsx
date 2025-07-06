@@ -119,7 +119,7 @@ export default function Party() {
   }, [participants]);
 
   return (
-    <div className="w-full h-full p-8 flex flex-col relative">
+    <div className="w-full h-full p-8 flex flex-col relative bg-transparent">
       <div className="flex flex-col justify-between h-full w-full">
         <div className="flex justify-between">
           <div className="flex flex-col">

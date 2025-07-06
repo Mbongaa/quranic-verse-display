@@ -45,12 +45,27 @@ export async function GET(request: NextRequest) {
     }
 
     const { searchParams } = request.nextUrl;
-    const partyId = searchParams.get("party_id")!;
-    const userName = searchParams.get("name")!;
-    const host = searchParams.get("host")! === "true";
+    const partyId = searchParams.get("party_id");
+    const userName = searchParams.get("name");
+    const host = searchParams.get("host") === "true";
+
+    // Validate required parameters
+    if (!partyId || !userName || userName.trim() === '') {
+      return new Response(
+        JSON.stringify({
+          error: "Missing required parameters: party_id and name are required and cannot be empty",
+        }),
+        {
+          status: 400,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+    }
 
     const roomName = partyId;
-    const identity = userName;
+    const identity = userName.trim();
 
     const grant: VideoGrant = {
       room: roomName,

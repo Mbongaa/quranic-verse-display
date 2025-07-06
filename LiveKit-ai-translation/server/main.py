@@ -24,6 +24,7 @@ from livekit.agents import (
 from livekit.plugins import openai, silero, speechmatics
 from livekit.plugins.speechmatics.types import TranscriptionConfig
 from dotenv import load_dotenv
+import os
 
 load_dotenv()
 
@@ -205,11 +206,9 @@ async def entrypoint(job: JobContext):
     tasks = []
     translators = {}
     
-    # ALWAYS add Dutch translator for display page
-    # Create Dutch enum member using getattr to avoid linter issues
+    # Create hardcoded Dutch translator (revert to working version)
     dutch_enum = getattr(LanguageCode, 'Dutch')
     translators["nl"] = Translator(job.room, dutch_enum)
-    logger.info(f"🇳🇱 AUTOMATICALLY added Dutch translator for display page")
     
     # Sentence accumulation for proper sentence-by-sentence translation
     accumulated_text = ""  # Accumulates text until we get a complete sentence
@@ -218,7 +217,7 @@ async def entrypoint(job: JobContext):
     pending_translation_task = None
     
     logger.info(f"🚀 Starting entrypoint for room: {job.room.name if job.room else 'unknown'}")
-    logger.info(f"📝 Initialized translators with Dutch: {list(translators.keys())}")
+    logger.info(f"📝 Initialized hardcoded Dutch translator (nl)")
     logger.info(f"🔍 Translators dict ID: {id(translators)}")
     logger.info(f"🗣️ STT configured for {languages[source_language].name} speech recognition using Speechmatics (source language: {source_language})")
     logger.info(f"🇸🇦 ARABIC is set as the default host/speaker language")

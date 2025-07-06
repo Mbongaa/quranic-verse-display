@@ -214,52 +214,58 @@ export default function Captions() {
       }`}
     >
 
-
-      {/* Source Language Transcription (Clean, Simple) */}
+      {/* Source Language Transcription (Clean, Simple) - Remove title */}
       <div className="text-center">
-        <h3 className="text-lg font-semibold text-gray-700 mb-6">🎤 Live Arabic Transcription</h3>
+        {/* Hide title for iframe display */}
+        {/* <h3 className="text-lg font-semibold text-gray-700 mb-6">🎤 Live Arabic Transcription</h3> */}
         <div className="min-h-[3rem] flex items-center justify-center">
           {displaySource ? (
             <p className="text-black text-4xl font-medium leading-relaxed text-center" dir="rtl">
               {displaySource}
             </p>
           ) : (
-            <p className="text-gray-500 italic text-2xl">Waiting for Arabic transcriptions...</p>
+            // Hide waiting message for iframe display
+            <div className="invisible">
+              <p className="text-gray-500 italic text-2xl">Waiting for Arabic transcriptions...</p>
+            </div>
           )}
         </div>
       </div>
 
-      {/* Translation (Clean, Simple) */}
+      {/* Translation (Clean, Simple) - Remove title */}
       {state.captionsLanguage !== "ar" && (
         <div className="text-center border-t border-gray-200 pt-8">
-          <h3 className="text-lg font-semibold text-gray-700 mb-6">
+          {/* Hide title for iframe display */}
+          {/* <h3 className="text-lg font-semibold text-gray-700 mb-6">
             🌐 Translation ({state.captionsLanguage.toUpperCase()})
-          </h3>
+          </h3> */}
           <div className="min-h-[3rem] flex items-center justify-center">
             {displayTranslation ? (
               <p className="text-black text-5xl font-semibold leading-relaxed text-center">
                 {displayTranslation}
               </p>
             ) : (
-              <p className="text-gray-500 italic text-2xl text-center">
-                {Object.keys(transcriptions).length > 0 
-                  ? "Waiting for translations..." 
-                  : "Select a language to see translations!"}
-              </p>
+              // Hide processing message for iframe display
+              <div className="invisible">
+                <p className="text-gray-500 italic text-2xl text-center">
+                  {Object.keys(transcriptions).length > 0 
+                    ? "Waiting for translations..." 
+                    : "Processing..."}
+                </p>
+              </div>
             )}
           </div>
         </div>
       )}
 
-      {/* Instructions */}
-      {!state.isHost && state.captionsLanguage === "ar" && Object.keys(transcriptions).length === 0 && (
+      {/* Hide instructions for iframe display */}
+      {/* {!state.isHost && state.captionsLanguage === "ar" && Object.keys(transcriptions).length === 0 && (
         <div className="text-center p-4 bg-blue-50 border border-blue-200 rounded-lg">
           <p className="text-blue-800 text-lg">
             💡 Select a language from the dropdown below to see real-time translations!
           </p>
         </div>
-      )}
-
+      )} */}
 
     </div>
   );

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useReducer, use } from "react";
+import React, { useReducer, use, useEffect } from "react";
 import { LiveKitRoom, RoomAudioRenderer } from "@livekit/components-react";
 import Party from "@/components/party";
 import Lobby from "@/components/lobby";
@@ -27,6 +27,22 @@ export default function PartyPage({ params }: PartyPageProps) {
   const [state, dispatch] = useReducer(reducer, initialState);
   const { party_id } = use<PartyIdType>(params);
 
+  // Override alert functions for cleaner iframe display
+  useEffect(() => {
+    const originalAlert = window.alert;
+    const originalConfirm = window.confirm;
+    
+    // Suppress alert dialogs for iframe usage
+    window.alert = () => false;
+    window.confirm = () => true;
+    
+    return () => {
+      // Restore original functions on cleanup
+      window.alert = originalAlert;
+      window.confirm = originalConfirm;
+    };
+  }, []);
+
   return (
     <PartyStateContext.Provider value={{ state, dispatch }}>
       <LiveKitRoom
@@ -35,7 +51,7 @@ export default function PartyPage({ params }: PartyPageProps) {
         connect={state.shouldConnect}
         audio={false}  // Prevent automatic audio publishing
         video={false}  // No video needed
-        className="w-full h-full"
+        className="w-full h-full bg-transparent" // Add transparent background
         options={{
           // Essential connection options
           disconnectOnPageLeave: true,
@@ -65,11 +81,8 @@ export default function PartyPage({ params }: PartyPageProps) {
             console.error("4. Network/firewall blocking WebRTC");
             console.error("5. LiveKit server region issues");
             
-            // Show user-friendly error
-            alert("❌ Connection Failed!\n\n" +
-                  "WebRTC negotiation timed out.\n" +
-                  "This usually means missing environment variables.\n\n" +
-                  "Check browser console for details.");
+            // Don't show alert dialog for iframe display - just log to console
+            console.log("❌ Connection Failed - iframe mode, suppressing alert dialog");
           }
           
           if (error.message?.includes("websocket")) {

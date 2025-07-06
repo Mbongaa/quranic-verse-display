@@ -5,32 +5,53 @@ import { Separator } from '@/components/ui/separator';
 import { useToast } from '@/hooks/use-toast';
 import ConnectionStatus from './ConnectionStatus';
 import TranscriptionDisplay from './TranscriptionDisplay';
+import RoomManager from './RoomManager';
+import SimpleHost from './SimpleHost';
 import { useWebSocket } from '@/hooks/useWebSocket';
 import { Button } from '@/components/ui/button';
-import { Play, Square, RefreshCw } from 'lucide-react';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Play, Square, RefreshCw, Settings, Monitor } from 'lucide-react';
+
+interface LiveSession {
+  roomName: string;
+  userName: string;
+  // Remove targetLanguage to revert to working version
+  startTime: number;
+}
 
 export default function TranslationInterface() {
-  const [isSessionActive, setIsSessionActive] = useState(false);
+  const [activeTab, setActiveTab] = useState<string>('room-manager');
+  const [liveSession, setLiveSession] = useState<LiveSession | null>(null);
   const { toast } = useToast();
   
-  // Connect to the existing Jama WebSocket server
+  // Connect to the existing Jama WebSocket server for fallback monitoring
   const { data, isConnected } = useWebSocket('ws://localhost:8765');
 
-  const handleStartSession = async () => {
-    // In a real implementation, this would trigger your LiveKit backend
-    // For now, it just shows that a session is active
-    setIsSessionActive(true);
-    toast({
-      title: "Session Started",
-      description: "Jama Translation session is now active",
+  // Start live hosting session
+  const handleRoomCreated = (roomName: string, userName: string) => { // Remove targetLanguage parameter
+    console.log(`🚀 Room created: ${roomName} for ${userName}`); // Remove targetLanguage logging
+    
+    setLiveSession({
+      roomName,
+      userName,
+      // Remove targetLanguage to revert to working version
+      startTime: Date.now(),
     });
+    
+    // Auto-switch to Live Monitor tab
+    setActiveTab('live-monitor');
   };
 
-  const handleStopSession = async () => {
-    setIsSessionActive(false);
+  // Exit live session
+  const handleExitLiveSession = () => {
+    console.log('🔚 Exiting live session');
+    
+    setLiveSession(null);
+    setActiveTab('room-manager'); // Return to room management
+
     toast({
-      title: "Session Stopped",
-      description: "Jama Translation session has been stopped",
+      title: "Live Session Ended",
+      description: "Returned to room management",
     });
   };
 
@@ -47,71 +68,76 @@ export default function TranslationInterface() {
           <ConnectionStatus isConnected={isConnected} />
         </div>
 
-        <Card>
-          <CardContent className="p-6">
-            <div className="flex flex-col space-y-4">
-              <div className="flex items-center justify-between">
-                <h2 className="text-xl font-semibold text-gray-700">Session Controls</h2>
-                <div className="flex gap-2">
-                  {!isSessionActive ? (
-                    <Button
-                      onClick={handleStartSession}
-                      disabled={!isConnected}
-                      className="bg-emerald-600 hover:bg-emerald-700"
-                    >
-                      <Play className="w-4 h-4 mr-2" />
-                      Start Translation Session
-                    </Button>
-                  ) : (
-                    <Button
-                      onClick={handleStopSession}
-                      variant="destructive"
-                    >
-                      <Square className="w-4 h-4 mr-2" />
-                      Stop Session
-                    </Button>
-                  )}
-                  <Button
-                    onClick={handleRefresh}
-                    variant="outline"
-                  >
-                    <RefreshCw className="w-4 h-4 mr-2" />
-                    Refresh
-                  </Button>
-                </div>
-              </div>
+        <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-2">
+            <TabsTrigger value="room-manager" className="flex items-center gap-2">
+              <Settings className="w-4 h-4" />
+              Room Management
+            </TabsTrigger>
+            <TabsTrigger 
+              value="live-monitor" 
+              className="flex items-center gap-2"
+              disabled={!liveSession?.startTime}
+            >
+              <Monitor className="w-4 h-4" />
+              Live Monitor
+              {liveSession?.startTime && (
+                <span className="ml-1 px-1.5 py-0.5 text-xs bg-red-500 text-white rounded-full">
+                  LIVE
+                </span>
+              )}
+            </TabsTrigger>
+          </TabsList>
 
-              <Separator />
+          <TabsContent value="room-manager" className="space-y-6">
+            <RoomManager onRoomCreated={handleRoomCreated} />
+          </TabsContent>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-center">
-                <div className="p-3 bg-blue-50 rounded-lg">
-                  <p className="text-sm text-blue-600 font-medium">Connection Status</p>
-                  <p className="text-lg font-bold text-blue-800">
-                    {isConnected ? 'Connected' : 'Disconnected'}
-                  </p>
-                </div>
-                <div className="p-3 bg-emerald-50 rounded-lg">
-                  <p className="text-sm text-emerald-600 font-medium">Session Status</p>
-                  <p className="text-lg font-bold text-emerald-800">
-                    {isSessionActive ? 'Active' : 'Inactive'}
-                  </p>
-                </div>
-                <div className="p-3 bg-purple-50 rounded-lg">
-                  <p className="text-sm text-purple-600 font-medium">Last Update</p>
-                  <p className="text-lg font-bold text-purple-800">
-                    {data.lastUpdate ? new Date(data.lastUpdate).toLocaleTimeString() : 'Never'}
-                  </p>
-                </div>
-              </div>
-            </div>
-          </CardContent>
-        </Card>
+          <TabsContent value="live-monitor" className="space-y-6">
+            {liveSession?.startTime ? (
+              <SimpleHost
+                roomName={liveSession.roomName}
+                userName={liveSession.userName}
+                onExit={handleExitLiveSession}
+              />
+            ) : (
+              <Card>
+                <CardContent className="p-6">
+                  <div className="flex flex-col space-y-4">
+                    <div className="flex items-center justify-between">
+                      <h2 className="text-xl font-semibold text-gray-700">Live Translation Monitor</h2>
+                      <div className="flex gap-2">
+                        <Button
+                          onClick={handleRefresh}
+                          variant="outline"
+                        >
+                          <RefreshCw className="w-4 h-4 mr-2" />
+                          Refresh
+                        </Button>
+                      </div>
+                    </div>
 
-        <TranscriptionDisplay
-          arabicTranscription={data.arabicTranscription}
-          dutchTranslation={data.dutchTranslation}
-          lastUpdate={data.lastUpdate}
-        />
+                    <Separator />
+
+                    <div className="text-center py-8">
+                      <Monitor className="w-16 h-16 mx-auto text-gray-400 mb-4" />
+                      <h3 className="text-lg font-medium text-gray-600 mb-2">No Active Live Session</h3>
+                      <p className="text-gray-500 mb-4">
+                        Create a room in Room Management to start a live translation session
+                      </p>
+                      <Button 
+                        variant="outline" 
+                        onClick={() => setActiveTab('room-manager')}
+                      >
+                        Go to Room Management
+                      </Button>
+                    </div>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+          </TabsContent>
+        </Tabs>
 
         <div className="text-center text-sm text-gray-500">
           <p>Built with React & Tailwind CSS • Connected to Jama Translation Backend</p>
