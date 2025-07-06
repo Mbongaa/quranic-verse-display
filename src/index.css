@@ -119,17 +119,20 @@
     scroll-behavior: smooth;
   }
 
-  .translation-container::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 80%;
-    background: linear-gradient(to bottom, hsl(var(--background)), transparent);
-    pointer-events: none;
-    border-radius: inherit;
-    z-index: 1;
+  .text-gradient-fade {
+    /* Define the gradient background */
+    background: linear-gradient(
+      to bottom,
+      transparent 20%,
+      hsl(var(--foreground)) 80%
+    );
+    
+    /* Clip the background to the text shape */
+    -webkit-background-clip: text;
+    background-clip: text;
+    
+    /* Make the text color transparent to reveal the gradient */
+    color: transparent;
   }
   
   .translation-text {

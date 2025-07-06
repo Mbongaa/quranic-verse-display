@@ -422,7 +422,7 @@ const KhutbahDisplay = () => {
               showCamera ? 'w-full lg:w-3/5' : 'w-full'
             }`}
           >
-            <div className="text-left translation-text">
+            <div className="text-left translation-text text-gradient-fade">
               {lines.length > 0 ? (
                 <div className="space-y-2">
                   {lines.map((line, lineIndex) => {
