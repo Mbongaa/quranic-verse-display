@@ -119,11 +119,21 @@
     scroll-behavior: smooth;
   }
 
-  .text-fade-out-at-top {
-    /* Create the gradient mask that fades from transparent at top to opaque at bottom */
-    mask-image: linear-gradient(to bottom, transparent, black 80%);
-    -webkit-mask-image: linear-gradient(to bottom, transparent, black 80%);
-  }
+.text-fade-out-at-top {
+  /* This creates a "safe zone" at the bottom and only fades near the top */
+  mask-image: linear-gradient(
+    to top,          /* The direction is important here */
+    black 0%,         /* Starts solid black (visible) at the bottom */
+    black 70%,        /* Stays solid black up to the 70% mark */
+    transparent 100% /* Fades to transparent from 70% to the top (100%) */
+  );
+  -webkit-mask-image: linear-gradient(
+    to top,
+    black 0%,
+    black 70%,
+    transparent 100%
+  );
+
   
   .translation-text {
     @apply text-foreground leading-relaxed font-noto;
